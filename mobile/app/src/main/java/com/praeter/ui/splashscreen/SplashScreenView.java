@@ -86,13 +86,9 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         Completable
                 .complete()
                 .delay(3, TimeUnit.SECONDS)
-                .doOnComplete(() -> {
-                    goToMainActivity();
-                })
+                .doOnComplete(this::goToMainActivity)
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
-                //Caused by: android.util.AndroidRuntimeException:
-                // Animators may only be run on Looper threads
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
@@ -122,8 +118,5 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
             navigator.callMainActivity();
             context.finish();
         }
-
     }
-
-
 }
