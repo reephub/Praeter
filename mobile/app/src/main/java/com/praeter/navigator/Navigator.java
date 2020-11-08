@@ -3,6 +3,7 @@ package com.praeter.navigator;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.praeter.ui.login.LoginActivity;
 import com.praeter.ui.mainactivity.MainActivity;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
 
@@ -20,6 +21,16 @@ public class Navigator {
 
     public void callSplashActivity() {
         context.startActivity(new Intent(context, SplashScreenActivity.class));
+    }
+
+
+    public void callLoginActivity() {
+        context.startActivity(new Intent(context, LoginActivity.class));
+    }
+
+
+    public void callSignUpActivity() {
+        //context.startActivity(new Intent(context, SignUpActivity.class));
     }
 
     public void callMainActivity() {
