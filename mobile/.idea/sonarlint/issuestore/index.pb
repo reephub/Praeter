@@ -25,8 +25,6 @@ o
 ?app/src/main/java/com/praeter/ui/mainactivity/MainActivity.java,0\d\0df5eb8a88da4efcf5a24cf6fe4f6ced996894cc
 w
 Gapp/src/main/java/com/praeter/ui/splashscreen/SplashScreenActivity.java,5\a\5a03874378392d1ec539831d33dc041f1b866205
-R
-"app/src/main/res/values/themes.xml,e\b\eb7f0f821bde169dd21862705b2b042d2cea69a3
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
@@ -42,10 +40,6 @@ s
 Capp/src/main/java/com/praeter/ui/mainactivity/MainActivityView.java,1\3\1304af3a294c5803b75560ca4bcfee195261370b
 Y
 )app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
-R
-"app/src/main/res/values/dimens.xml,c\3\c3c1811dec2dbad2deeafb9aad505ca9631da740
-X
-(app/src/main/res/values-night/dimens.xml,3\5\354aad60dde503d37982541e2883e9ebf88f9afa
 s
 Capp/src/main/java/com/praeter/ui/splashscreen/SplashScreenView.java,4\e\4eb480963a75001d990b946d10483dd8e0ccd6b5
 j

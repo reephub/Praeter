@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.praeter.ui.login.LoginActivity;
 import com.praeter.ui.mainactivity.MainActivity;
+import com.praeter.ui.servicepicker.ServicePickerActivity;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
 
 import javax.inject.Inject;
@@ -23,9 +24,18 @@ public class Navigator {
         context.startActivity(new Intent(context, SplashScreenActivity.class));
     }
 
+    public void callServicePickerActivity() {
+        context.startActivity(new Intent(context, ServicePickerActivity.class));
+    }
 
-    public void callLoginActivity() {
-        context.startActivity(new Intent(context, LoginActivity.class));
+
+    public void callLoginActivity(String loginType) {
+        Intent intent = new Intent(context, LoginActivity.class);
+
+        intent.putExtra(LoginActivity.LOGIN_BUNDLE, LoginActivity.LOGIN_BUNDLE);
+        intent.putExtra(LoginActivity.LOGIN_TYPE, loginType);
+
+        context.startActivity(intent);
     }
 
 
