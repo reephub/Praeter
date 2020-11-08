@@ -1,19 +1,25 @@
-package com.praeter.ui.splashscreen;
+package com.praeter.ui.base;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.praeter.R;
-import com.praeter.ui.base.BaseActivity;
+import javax.inject.Inject;
 
-public class SplashScreenActivity extends BaseActivity<SplashScreenView> {
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class BaseActivity<V extends BaseView> extends DaggerAppCompatActivity {
+
+    @Inject
+    public V view;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_splashscreen);
         super.onCreate(savedInstanceState);
+        view.onCreate();
     }
+
 
 
     @Override

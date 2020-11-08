@@ -4,16 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.praeter.data.DataModule;
+import com.praeter.di.component.DaggerComponentInjector;
+import com.praeter.di.module.ApplicationModule;
 import com.praeter.ui.login.LoginActivity;
 import com.praeter.utils.DeviceManager;
 import com.praeter.utils.MyPreferenceManager;
 
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 import timber.log.Timber;
 
-public class PraeterApplication extends MultiDexApplication {
+public class PraeterApplication extends DaggerApplication {
 
     private static Context mContext;
     private static PraeterApplication mInstance;
@@ -28,10 +32,20 @@ public class PraeterApplication extends MultiDexApplication {
     }
 
     @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerComponentInjector.builder()
+                .application(this)
+                .applicationModule(new ApplicationModule(this))
+                .dataModule(new DataModule(this))
+                .build();
+    }
+
+    @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
 
     @Override
     public void onCreate() {
