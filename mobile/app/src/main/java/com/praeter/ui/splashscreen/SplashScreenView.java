@@ -86,7 +86,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         Completable
                 .complete()
                 .delay(3, TimeUnit.SECONDS)
-                .doOnComplete(this::goToMainActivity)
+                .doOnComplete(this::goToLoginActivity)
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -112,10 +112,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     //
     /////////////////////////////////
 
-    private void goToMainActivity() {
+    private void goToLoginActivity() {
         Timber.i("goToMainActivity()");
         if (context != null && navigator != null) {
-            navigator.callMainActivity();
+            navigator.callLoginActivity();
             context.finish();
         }
     }
