@@ -34,13 +34,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     private SplashScreenActivity context;
 
-    private static final String ANDROID_RES_PATH = "android.resource://";
-    private static final String SEPARATOR = "/";
-
-    private int position = 0;
-
-    private int shortAnimationDuration;
-
 
     @Inject
     SplashScreenView(SplashScreenActivity context) {
@@ -59,12 +52,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
-
-        // Retrieve and cache the system's default "short" animation time.
-        shortAnimationDuration =
-                context
-                        .getResources()
-                        .getInteger(android.R.integer.config_shortAnimTime);
 
         getPresenter().hasPermissions(context);
     }
@@ -86,7 +73,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         Completable
                 .complete()
                 .delay(3, TimeUnit.SECONDS)
-                .doOnComplete(this::goToLoginActivity)
+                .doOnComplete(this::goToServicePickerActivity)
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -112,10 +99,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     //
     /////////////////////////////////
 
-    private void goToLoginActivity() {
-        Timber.i("goToMainActivity()");
+    private void goToServicePickerActivity() {
+        Timber.i("goToServicePickerActivity()");
         if (context != null && navigator != null) {
-            navigator.callLoginActivity();
+            navigator.callServicePickerActivity();
             context.finish();
         }
     }

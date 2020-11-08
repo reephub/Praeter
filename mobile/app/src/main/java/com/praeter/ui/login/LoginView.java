@@ -107,6 +107,7 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
     public void onLoginSuccessful() {
         if (context != null && navigator != null) {
             navigator.callMainActivity();
+            context.finish();
         }
     }
 
