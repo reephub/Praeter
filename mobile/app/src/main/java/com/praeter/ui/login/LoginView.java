@@ -5,11 +5,14 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -70,8 +73,20 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
         context.getSupportActionBar().setTitle(
                 context.getString(R.string.title_activity_login));
 
-        inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
         inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
+        inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
+
+        //https://stackoverflow.com/questions/17989733/move-to-another-edittext-when-soft-keyboard-next-is-clicked-on-android
+        inputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(context, context.findViewById(android.R.id.content));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -82,9 +97,10 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
 
     @Override
     public void hideLoading() {
-        if (progressBar != null)
-            progressBar.setVisibility(View.GONE);
-
+        context.runOnUiThread(() -> {
+            if (progressBar != null)
+                progressBar.setVisibility(View.GONE);
+        });
     }
 
     @Override
