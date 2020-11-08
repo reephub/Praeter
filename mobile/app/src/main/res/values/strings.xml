@@ -13,6 +13,7 @@
     <!-- Splash -->
 
     <!-- Login -->
+    <string name="title_activity_login">LoginActivity</string>
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -21,9 +22,11 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
 
+    <string name="action_logout">Logout</string>
+    <string name="enter">Enter</string>
+
 
     <!-- Main -->
-
 
 
 </resources>

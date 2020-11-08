@@ -15,8 +15,6 @@ e
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-Y
-)app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 ]
@@ -27,5 +25,3 @@ o
 ?app/src/main/java/com/praeter/ui/mainactivity/MainActivity.java,0\d\0df5eb8a88da4efcf5a24cf6fe4f6ced996894cc
 w
 Gapp/src/main/java/com/praeter/ui/splashscreen/SplashScreenActivity.java,5\a\5a03874378392d1ec539831d33dc041f1b866205
-S
-#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e

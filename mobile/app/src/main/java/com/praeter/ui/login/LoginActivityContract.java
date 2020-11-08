@@ -17,11 +17,16 @@ public interface LoginActivityContract {
          */
         void hideLoading();
 
+        void onLoginSuccessful();
+
+        void onLoginFailed();
 
         void closeApp();
     }
 
     interface Presenter {
+
+        void makeCallLogin();
 
     }
 }
