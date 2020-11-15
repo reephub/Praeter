@@ -52,14 +52,14 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.praeter.R;
-import com.praeter.ui.base.BaseFragment;
+import com.praeter.data.local.bean.MapsEnum;
 import com.praeter.utils.DeviceManager;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -158,6 +158,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     private void initLocationSettings() {
         Timber.i("initLocationSettings()");
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         mSettingsClient = LocationServices.getSettingsClient(context);
 
@@ -167,9 +168,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 super.onLocationResult(locationResult);
                 // location is received
                 mCurrentLocation = locationResult.getLastLocation();
-                    /*mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
-                    updateLocationUI();*/
+                updateLocationUI();
             }
         };
 
@@ -183,6 +184,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
+
+        geocoder = new Geocoder(context, Locale.getDefault());
     }
 
 
@@ -206,7 +209,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         mProvider = mLocationManager.getBestProvider(mCriteria, true);
         try {
-
             mLocation = mLocationManager.getLastKnownLocation(mProvider);
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -218,7 +220,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         try {
 
-            mLocationManager.requestLocationUpdates(mProvider, 20000, 0, this);
+            mLocationManager.requestLocationUpdates(
+                    mProvider,
+                    20000,
+                    0,
+                    this);
         } catch (SecurityException e) {
             e.printStackTrace();
         }
@@ -239,6 +245,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Timber.i("onMapReady()");
         mMap = googleMap;
 
+        // Set a preference for minimum and maximum zoom.
+        mMap.setMinZoomPreference(MapsEnum.WORLD.getDistance());
+        mMap.setMaxZoomPreference(MapsEnum.BUILDINGS.getDistance());
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.getDistance()));
+
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions()
@@ -252,6 +263,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     @SuppressLint("MissingPermission")
     @Override
     public void onLocationChanged(@NonNull Location location) {
+
+        // Remove markers
+        mMap.clear();
+
         Timber.i("onLocationChanged()");
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
@@ -264,11 +279,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                         .position(latLng)
                         .title(
                                 DeviceManager.getDeviceLocationToString(
+                                        geocoder,
                                         location,
                                         context)));
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(50));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(750), 2000, null);
     }
 
     @Override

@@ -5,11 +5,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -94,7 +92,7 @@ public class DeviceManager {
     }
 
 
-    public static String getDeviceLocationToString(final Location location, final Context context) {
+    public static String getDeviceLocationToString(final Geocoder geocoder, final Location location, final Context context) {
 
         Timber.i("--- Class Utils ---  getDeviceLocation() ");
 
@@ -105,12 +103,11 @@ public class DeviceManager {
         double longitude = location.getLongitude();
 
         //get the address
-        Geocoder geoCoder = new Geocoder(context, Locale.getDefault());
         StringBuilder builderAddr = new StringBuilder();
         StringBuilder builderCity = new StringBuilder();
 
         try {
-            List<Address> address = geoCoder.getFromLocation(latitude, longitude, 1);
+            List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
             int maxLines = address.get(0).getMaxAddressLineIndex();
             for (int i = 0; i < maxLines; i++) {
                 String addressStr = address.get(0).getAddressLine(i);
