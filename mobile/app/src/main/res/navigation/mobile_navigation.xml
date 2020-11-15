@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.praeter.ui.mainactivity.HomeFragment"
+        android:tag="HomeFragmentTag"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 

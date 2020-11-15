@@ -2,11 +2,16 @@ package com.praeter.ui.mainactivity;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -17,9 +22,18 @@ import com.praeter.ui.base.BaseActivity;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class MainActivity extends BaseActivity<MainActivityView> {
 
+
+    // Views
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+
     private AppBarConfiguration mAppBarConfiguration;
+    private NavController navController;
 
     @Inject
     Navigator navigator;
@@ -39,21 +53,20 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
-
 
 
     @Override
@@ -61,6 +74,36 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_home) {
+            Timber.e("item.getItemId() == R.id.action_home");
+
+            // https://stackoverflow.com/questions/51385067/android-navigation-architecture-component-get-current-visible-fragment
+            // Android Navigation Architecture Component - Get current visible fragment
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+            // Store Home Fragment
+            Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+            if (currentFragment instanceof HomeFragment
+                    && currentFragment.isVisible()) {
+                //DO STUFF
+                Timber.e("Fragment is already visible, do nothing");
+            } else {
+                //Whatever
+                Timber.e("call fragment manager do the transaction");
+                navController.navigate(R.id.nav_home);
+            }
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

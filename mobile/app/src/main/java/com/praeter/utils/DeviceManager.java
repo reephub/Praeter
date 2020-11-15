@@ -94,7 +94,7 @@ public class DeviceManager {
 
     public static String getDeviceLocationToString(final Geocoder geocoder, final Location location, final Context context) {
 
-        Timber.i("--- Class Utils ---  getDeviceLocation() ");
+        Timber.i("getDeviceLocationToString");
 
         String finalAddress = ""; //This is the complete address.
         String finalCity = ""; //This is the complete address.
@@ -110,6 +110,7 @@ public class DeviceManager {
             List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
             Timber.e("addresses : %s", address);
             int maxLines = address.get(0).getMaxAddressLineIndex();
+
             for (int i = 0; i < maxLines; i++) {
                 String addressStr = address.get(0).getAddressLine(i);
                 Timber.d("addressStr : %s", addressStr);
@@ -127,7 +128,7 @@ public class DeviceManager {
             finalAddress = builderAddr.toString(); //This is the complete address.
             finalCity = builderCity.toString(); //This is the complete address.
 
-            Timber.tag("OHOH").e("Adresse : " + finalAddress + " | " + "City : " + finalCity); //This will display the final address.
+            Timber.e("Adresse : " + finalAddress + " | " + "City : " + finalCity); //This will display the final address.
 
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();

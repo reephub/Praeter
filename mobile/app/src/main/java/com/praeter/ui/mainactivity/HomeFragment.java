@@ -68,6 +68,8 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
+    public static final String TAG = "HomeFragmentTag";
+
     private Context context;
 
     SupportMapFragment mapFragment;
@@ -104,6 +106,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     /*@Inject
     HomeFragment(){}*/
+
+    public HomeFragment newInstance() {
+        return new HomeFragment();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
