@@ -46,6 +46,9 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
     @BindView(R.id.input_password)
     TextInputEditText inputPassword;
 
+    @BindView(R.id.no_account_register)
+    TextView tvNoAccount;
+
     @BindView(R.id.btn_enter)
     Button btnEnter;
 
@@ -140,6 +143,11 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
     @OnClick(R.id.btn_enter)
     void onButtonClicked() {
         login();
+    }
+
+    @OnClick(R.id.no_account_register)
+    void onNoAccountClicked() {
+        navigator.callSignUpActivity();
     }
 
     /**

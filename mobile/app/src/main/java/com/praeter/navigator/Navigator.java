@@ -6,6 +6,8 @@ import android.content.Intent;
 import com.praeter.ui.login.LoginActivity;
 import com.praeter.ui.mainactivity.MainActivity;
 import com.praeter.ui.servicepicker.ServicePickerActivity;
+import com.praeter.ui.signup.license.LicenseAgreementActivity;
+import com.praeter.ui.signup.userform.UserFormActivity;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
 
 import javax.inject.Inject;
@@ -40,7 +42,7 @@ public class Navigator {
 
 
     public void callSignUpActivity() {
-        //context.startActivity(new Intent(context, SignUpActivity.class));
+        context.startActivity(new Intent(context, LicenseAgreementActivity.class));
     }
 
     public void callMainActivity() {
@@ -52,5 +54,9 @@ public class Navigator {
                 context
                         .getPackageManager()
                         .getLaunchIntentForPackage(intentPackageName));
+    }
+
+    public void callUserFormActivity() {
+        context.startActivity(new Intent(context, UserFormActivity.class));
     }
 }

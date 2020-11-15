@@ -1,4 +1,4 @@
-package com.praeter.ui.mainactivity;
+package com.praeter.ui.mainactivity.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
