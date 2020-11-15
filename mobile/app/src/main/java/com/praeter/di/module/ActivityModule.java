@@ -10,6 +10,8 @@ import com.praeter.ui.servicepicker.ServicePickerActivity;
 import com.praeter.ui.servicepicker.ServicePickerModule;
 import com.praeter.ui.signup.license.LicenseAgreementActivity;
 import com.praeter.ui.signup.license.LicenseAgreementModule;
+import com.praeter.ui.signup.userform.UserFormActivity;
+import com.praeter.ui.signup.userform.UserFormModule;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
 import com.praeter.ui.splashscreen.SplashScreenModule;
 
@@ -34,6 +36,10 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = LicenseAgreementModule.class)
     abstract LicenseAgreementActivity licenseAgreementActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = UserFormModule.class)
+    abstract UserFormActivity userFormActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = MainActivityModule.class)

@@ -6,4 +6,10 @@ public interface LicenseAgreementContract {
 
     interface View extends BaseView {
     }
+
+    interface Presenter {
+        void setActionBarTitle();
+
+        void goToUserFormActivity();
+    }
 }
