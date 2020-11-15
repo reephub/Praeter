@@ -108,6 +108,7 @@ public class DeviceManager {
 
         try {
             List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
+            Timber.e("addresses : %s", address);
             int maxLines = address.get(0).getMaxAddressLineIndex();
             for (int i = 0; i < maxLines; i++) {
                 String addressStr = address.get(0).getAddressLine(i);
