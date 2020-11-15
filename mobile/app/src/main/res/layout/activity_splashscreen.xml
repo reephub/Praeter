@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/medium_margin"
     tools:background="@color/oil">
 
     <!-- Image -->
@@ -23,22 +24,23 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_margin"
         android:text="@string/splash_catch_phrase"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toTopOf="@id/progressBar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_logo" />
 
 
     <!-- ProgressBar -->
+    <!-- https://stackoverflow.com/questions/31021823/lollipop-progress-bar-tinting -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/big_margin"
+        android:layout_height="@dimen/big_margin"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="72dp"
@@ -48,5 +50,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_app_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_margin"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="@string/version_placeholder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

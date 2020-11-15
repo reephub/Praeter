@@ -12,6 +12,7 @@
 
     <!-- Splash -->
     <string name="splash_catch_phrase">\"Fly away to the culture\"</string>
+    <string name="version_placeholder">"v "</string>
 
     <!-- Service picker -->
     <string name="search_a_service_btn">Look for a service</string>
@@ -27,11 +28,20 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
 
+    <string name="no_account_register">You don\'t have any account ?\nSign up</string>
+
     <string name="action_logout">Logout</string>
     <string name="enter">Enter</string>
 
 
     <!-- Main -->
-
-
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_home">Home</string>
+    <string name="menu_home">Next To Me</string>
+    <string name="menu_gallery">Classes</string>
+    <string name="menu_slideshow">Meet the Ancient</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.praeter.ui.mainactivity;
 
 
+import android.content.Context;
+
 import com.praeter.ui.base.BaseView;
 
 public interface MainActivityContract {
@@ -22,6 +24,11 @@ public interface MainActivityContract {
     }
 
     interface Presenter {
-
+        /**
+         * Ask the user for location permission
+         *
+         * @param context
+         */
+        void hasPermissions(Context context);
     }
 }

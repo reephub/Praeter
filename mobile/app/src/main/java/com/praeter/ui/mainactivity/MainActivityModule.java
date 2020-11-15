@@ -1,8 +1,8 @@
 package com.praeter.ui.mainactivity;
 
 
-
 import com.praeter.di.scopes.ActivityScope;
+import com.praeter.di.scopes.FragmentScope;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BasePresenter;
 
@@ -25,6 +25,12 @@ public abstract class MainActivityModule {
     static Navigator provideNavigator(MainActivity activity) {
         return new Navigator(activity);
     }
+
+    /*@FragmentScope
+    @Provides
+    static HomeFragment provideHomeFragment() {
+        return new HomeFragment();
+    }*/
 
     @ActivityScope
     @Binds

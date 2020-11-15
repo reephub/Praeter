@@ -1,7 +1,9 @@
 package com.praeter.ui.splashscreen;
 
 import android.annotation.SuppressLint;
+import android.widget.TextView;
 
+import com.praeter.R;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseViewImpl;
 
@@ -9,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -20,14 +23,8 @@ import timber.log.Timber;
 public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         implements SplashScreenContract.View {
 
-    /*@BindView(R.id.ll_splash_content)
-    RelativeLayout rlContent;
-
-    @BindView(R.id.splash_video)
-    VideoView splashVideoView;
-
     @BindView(R.id.tv_app_version)
-    TextView tvAppVersion;*/
+    TextView tvAppVersion;
 
     @Inject
     Navigator navigator;
@@ -54,6 +51,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         getPresenter().hasPermissions(context);
+
+        getPresenter().getAppVersion();
     }
 
     @Override
@@ -86,6 +85,11 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         closeApp();
     }
 
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void displayAppVersion(String appVersion) {
+        tvAppVersion.setText(context.getString(R.string.version_placeholder) + appVersion);
+    }
 
     @Override
     public void closeApp() {
@@ -102,7 +106,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     private void goToServicePickerActivity() {
         Timber.i("goToServicePickerActivity()");
         if (context != null && navigator != null) {
-            navigator.callServicePickerActivity();
+            //navigator.callServicePickerActivity();
+            navigator.callMainActivity();
             context.finish();
         }
     }

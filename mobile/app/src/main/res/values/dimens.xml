@@ -16,5 +16,7 @@
 
     <dimen name="activity_section_title">20sp</dimen>
 
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
 
 </resources>

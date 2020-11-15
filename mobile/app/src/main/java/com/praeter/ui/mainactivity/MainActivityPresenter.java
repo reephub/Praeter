@@ -1,5 +1,7 @@
 package com.praeter.ui.mainactivity;
 
+import android.content.Context;
+
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BasePresenterImpl;
 
@@ -18,4 +20,8 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
     MainActivityPresenter() {
     }
 
+    @Override
+    public void hasPermissions(Context context) {
+
+    }
 }

@@ -2,6 +2,9 @@ package com.praeter.ui.splashscreen;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
@@ -9,6 +12,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.praeter.PraeterApplication;
 import com.praeter.ui.base.BasePresenterImpl;
 
 import java.util.List;
@@ -68,5 +72,19 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                 })
                 .onSameThread()
                 .check();
+    }
+
+    @Override
+    public void getAppVersion() {
+
+        try {
+            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            getView().displayAppVersion(version);
+
+        } catch (PackageManager.NameNotFoundException error) {
+            Timber.e(error);
+        }
     }
 }

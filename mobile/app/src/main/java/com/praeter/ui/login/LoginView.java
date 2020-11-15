@@ -87,6 +87,15 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
                 return false;
             }
         });
+
+        preloadData();
+
+    }
+
+
+    void preloadData() {
+        inputEmail.setText("test@test.fr");
+        inputPassword.setText("1234");
     }
 
     @Override
