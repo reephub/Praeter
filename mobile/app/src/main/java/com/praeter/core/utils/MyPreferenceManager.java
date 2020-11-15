@@ -1,11 +1,7 @@
-package com.praeter.utils;
+package com.praeter.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-
-
-import timber.log.Timber;
 
 public class MyPreferenceManager {
 

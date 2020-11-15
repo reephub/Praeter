@@ -1,4 +1,4 @@
-package com.praeter.utils;
+package com.praeter.core.utils;
 
 import android.content.Context;
 import android.location.Address;

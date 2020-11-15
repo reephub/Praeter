@@ -53,7 +53,7 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.praeter.R;
 import com.praeter.data.local.bean.MapsEnum;
-import com.praeter.utils.DeviceManager;
+import com.praeter.core.utils.DeviceManager;
 
 import java.io.IOException;
 import java.text.DateFormat;

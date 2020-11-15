@@ -10,8 +10,8 @@ import com.praeter.data.DataModule;
 import com.praeter.di.component.DaggerComponentInjector;
 import com.praeter.di.module.ApplicationModule;
 import com.praeter.ui.login.LoginActivity;
-import com.praeter.utils.DeviceManager;
-import com.praeter.utils.MyPreferenceManager;
+import com.praeter.core.utils.DeviceManager;
+import com.praeter.core.utils.MyPreferenceManager;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
