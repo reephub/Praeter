@@ -17,6 +17,8 @@ ext {
 
     autoFillVersion = "1.0.0"
 
+    mapsVersion = "16.0.0"
+
     firebaseBomVersion = "26.0.0"
     adsVersion = "19.5.0"
 
@@ -64,9 +66,13 @@ ext {
 
             autoFill              : "androidx.autofill:autofill:$autoFillVersion",
 
+            // Maps
+            maps                  : "com.google.android.gms:play-services-maps:$mapsVersion",
+
+            // Firebase
             firebasePlatform      : "com.google.firebase:firebase-bom:$firebaseBomVersion",
             firebaseAnalitycs     : "com.google.firebase:firebase-analytics",
-            firebaseCrashlytics    : "com.google.firebase:firebase-crashlytics",
+            firebaseCrashlytics   : "com.google.firebase:firebase-crashlytics",
             firebaseMessaging     : "com.google.firebase:firebase-messaging",
             firebasePerf          : "com.google.firebase:firebase-perf",
             firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",

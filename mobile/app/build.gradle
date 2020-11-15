@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 // version information
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 4
+def versionPatch = 5
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -41,6 +41,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +71,11 @@ dependencies {
     implementation rootProject.ext.generalDependencies.autoFill
 
     // Google Play
+    // Maps
+    implementation rootProject.ext.generalDependencies.maps
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.api-client:google-api-client:1.30.9'
+
     // Firebase
     // Import the Firebase BoM
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)

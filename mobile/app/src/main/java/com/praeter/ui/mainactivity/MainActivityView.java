@@ -2,10 +2,19 @@ package com.praeter.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationView;
+import com.praeter.R;
 import com.praeter.ui.base.BaseViewImpl;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -16,7 +25,13 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     // TAG & Context
     private MainActivity context;
 
+    private AppBarConfiguration mAppBarConfiguration;
+
     //Views
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
     /*@BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;*/
     /*@BindView(R.id.toolbar)
@@ -54,7 +69,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         getPresenter().attachView(this);
 
         // Butterknife view binding
-        ButterKnife.bind(this, context.findViewById(android.R.id.content));
+        ButterKnife.bind(context);
 
         // Call presenter to fetch data
 //        getPresenter().getApplications();

@@ -34,6 +34,7 @@
 
 
     <!-- ProgressBar -->
+    <!-- https://stackoverflow.com/questions/31021823/lollipop-progress-bar-tinting -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar"

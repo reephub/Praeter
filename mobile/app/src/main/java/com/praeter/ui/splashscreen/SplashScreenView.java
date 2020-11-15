@@ -102,7 +102,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     private void goToServicePickerActivity() {
         Timber.i("goToServicePickerActivity()");
         if (context != null && navigator != null) {
-            navigator.callServicePickerActivity();
+            //navigator.callServicePickerActivity();
+            navigator.callMainActivity();
             context.finish();
         }
     }
