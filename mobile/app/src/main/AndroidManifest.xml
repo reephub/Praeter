@@ -75,7 +75,9 @@
 
         <activity android:name=".ui.signup.license.LicenseAgreementActivity" />
 
-        <activity android:name=".ui.signup.userform.UserFormActivity" />
+        <activity
+            android:name=".ui.signup.userform.UserFormActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.mainactivity.MainActivity"
