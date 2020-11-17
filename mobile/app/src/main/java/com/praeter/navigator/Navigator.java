@@ -7,6 +7,9 @@ import com.praeter.ui.login.LoginActivity;
 import com.praeter.ui.mainactivity.MainActivity;
 import com.praeter.ui.servicepicker.ServicePickerActivity;
 import com.praeter.ui.signup.license.LicenseAgreementActivity;
+import com.praeter.ui.signup.plan.PlanActivity;
+import com.praeter.ui.signup.premiumplan.PremiumPlanActivity;
+import com.praeter.ui.signup.successfulsignup.SuccessfulSignUpActivity;
 import com.praeter.ui.signup.userform.UserFormActivity;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
 
@@ -16,21 +19,23 @@ public class Navigator {
 
     private final Activity context;
 
-
     @Inject
     public Navigator(Activity context) {
         this.context = context;
     }
 
+    // Splash
     public void callSplashActivity() {
         context.startActivity(new Intent(context, SplashScreenActivity.class));
     }
 
+    // Service Picker
     public void callServicePickerActivity() {
         context.startActivity(new Intent(context, ServicePickerActivity.class));
     }
 
 
+    // Login
     public void callLoginActivity(String loginType) {
         Intent intent = new Intent(context, LoginActivity.class);
 
@@ -41,22 +46,32 @@ public class Navigator {
     }
 
 
+    // Sign Up
     public void callSignUpActivity() {
         context.startActivity(new Intent(context, LicenseAgreementActivity.class));
-    }
-
-    public void callMainActivity() {
-        context.startActivity(new Intent(context, MainActivity.class));
-    }
-
-    public void callIntentForPackageActivity(String intentPackageName) {
-        context.startActivity(
-                context
-                        .getPackageManager()
-                        .getLaunchIntentForPackage(intentPackageName));
     }
 
     public void callUserFormActivity() {
         context.startActivity(new Intent(context, UserFormActivity.class));
     }
+
+    public void callPlanActivity() {
+        context.startActivity(new Intent(context, PlanActivity.class));
+    }
+
+    public void callPremiumPlanActivity() {
+        context.startActivity(new Intent(context, PremiumPlanActivity.class));
+    }
+
+    public void callSuccessfulSignUpActivity() {
+        context.startActivity(new Intent(context, SuccessfulSignUpActivity.class));
+    }
+
+
+    // Main Activity
+    public void callMainActivity() {
+        context.startActivity(new Intent(context, MainActivity.class));
+    }
+
+
 }

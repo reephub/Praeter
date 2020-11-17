@@ -4,9 +4,10 @@ import com.praeter.ui.base.BaseView;
 
 public interface UserFormContract {
 
-    interface View extends BaseView {}
+    interface View extends BaseView {
+    }
 
     interface Presenter {
-
+        void goToPlanActivity();
     }
 }

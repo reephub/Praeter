@@ -82,8 +82,6 @@ a
 1app/src/main/res/navigation/mobile_navigation.xml,5\0\50c7987ff387678f825775665976b5fc8ed47989
 }
 Mapp/src/main/java/com/praeter/ui/mainactivity/fragment/SlideshowFragment.java,0\2\02258ed3ebf635dd94f30945dd1fae24083e1d09
-S
-#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
 v
 Fapp/src/main/java/com/praeter/ui/signup/userform/UserFormContract.java,9\2\92e688916b0ba0a60638651afa13e414f39d477f
 t

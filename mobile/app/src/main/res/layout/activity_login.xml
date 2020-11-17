@@ -68,7 +68,7 @@
                 android:layout_marginTop="@dimen/medium_margin"
                 android:background="@color/panther"
                 android:backgroundTint="@color/panther"
-                android:text="@string/btn_sign_up"
+                android:text="@string/btn_sign_in"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 

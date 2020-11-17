@@ -36,6 +36,8 @@ public class LicenseAgreementView extends BaseViewImpl<LicenseAgreementPresenter
     @Override
     public void onCreate() {
 
+        getPresenter().attachView(this);
+
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         getPresenter().setActionBarTitle();

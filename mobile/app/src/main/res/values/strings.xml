@@ -25,11 +25,11 @@
     <string name="propose_a_service_btn">Propose a service</string>
 
     <!-- Login -->
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Login</string>
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="btn_sign_up">Sign Up</string>
+    <string name="btn_sign_in">Sign In</string>
     <string name="err_msg_name">Enter your full name</string>
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
@@ -54,6 +54,14 @@
 
     <!-- Plan -->
     <string name="title_activity_plan">Plan</string>
+
+    <!-- Premium Plan -->
+    <string name="title_activity_premium">Premium Plan</string>
+
+    <!-- Successful Sign Up -->
+    <string name="title_activity_successful_sign_up">Validation</string>
+    <string name="msg_title_congratulations">Congratulations !</string>
+    <string name="dialog_msg_successfully_signed_up">You are successfully registered to the app.<br /><br />We wish you to have a nice experience using our application.<br /><br />Fly away to the culture.</string>
 
 
     <!-- Main -->

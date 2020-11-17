@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.praeter.BuildConfig;
 import com.praeter.R;
 import com.praeter.ui.base.BaseViewImpl;
 
@@ -85,6 +86,8 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
     @Override
     public void onCreate() {
 
+        getPresenter().attachView(this);
+
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         context.getSupportActionBar().setTitle(
@@ -92,11 +95,14 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
 
         setupSpinner();
 
+        if (BuildConfig.DEBUG)
+            preloadData();
+
     }
 
     private void setupSpinner() {
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
-                        context,
+                context,
                 android.R.layout.simple_spinner_item,
                 Arrays.asList(context.getResources().getStringArray(R.array.user_form_gender))) {
 
@@ -123,12 +129,24 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
         spGender.setAdapter(adapter);
     }
 
+    private void preloadData() {
+        inputLastName.setText("Doe");
+        inputFirstName.setText("John");
+        inputEmail.setText("john.doe@test.fr");
+        inputPassword.setText("johndoe");
+        inputConfirmPassword.setText("johndoe");
+        inputPhoneNumber.setText("06123456789");
+    }
+
 
     @OnClick(R.id.btn_continue)
     void onContinueButtonClicked() {
         Timber.d("onContinueButtonClicked()");
 
+        // TODO : check if field are correctly filled
         Timber.d("check if field are correctly filled");
+
+        getPresenter().goToPlanActivity();
     }
 
     @Override
