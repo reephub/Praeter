@@ -11,6 +11,8 @@ import com.praeter.R;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.SimpleActivity;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,7 +29,7 @@ public class PlanActivity extends SimpleActivity {
     @BindView(R.id.btn_continue)
     Button btnContinue;
 
-
+    @Inject
     Navigator navigator;
 
     @Override
@@ -39,22 +41,20 @@ public class PlanActivity extends SimpleActivity {
 
         getSupportActionBar().setTitle(R.string.title_activity_plan);
 
-        navigator = new Navigator(this);
+        navigator = new Navigator(PlanActivity.this);
     }
 
 
     @OnClick(R.id.btn_continue)
     void onContinueButtonClicked() {
-        if (rbFreePlan.isActivated()) {
-            return;
-        }
 
-        if (rbPremiumPlan.isActivated()) {
+        if (rbFreePlan.isChecked())
+            navigator.callSuccessfulSignUpActivity();
+
+        if (rbPremiumPlan.isChecked())
             navigator.callPremiumPlanActivity();
-            return;
-        }
 
-        navigator.callSuccessfulSignUpActivity();
+        finish();
     }
 
 }

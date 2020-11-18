@@ -29,6 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!--
+                https://stackoverflow.com/questions/17989733/move-to-another-edittext-when-soft-keyboard-next-is-clicked-on-android
+                -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"

@@ -1,7 +1,9 @@
 package com.praeter.ui.signup.successfulsignup;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -43,7 +45,7 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
     @BindView(R.id.iv_animated_check)
     ImageView ivCheck;
 
-    AnimationDrawable mAnimationDrawable;
+    AnimatedVectorDrawable mAnimationDrawable;
 
     Animation animFadeIn;
     Animation animSlideUp;
@@ -63,7 +65,6 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
         getSupportActionBar().setTitle(R.string.title_activity_successful_sign_up);
 
         navigator = new Navigator(this);
-        mAnimationDrawable = (AnimationDrawable) ivCheck.getBackground();
 
         startAnimation(tvTitleCongratulations);
 
@@ -96,9 +97,14 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 Timber.d("onAnimationEnd()");
-                
+
                 if (hasMsgAnimationStarted) {
-                    mAnimationDrawable.start();
+                    Drawable d = ivCheck.getDrawable();
+
+                    if (d instanceof AnimatedVectorDrawable) {
+                        mAnimationDrawable = (AnimatedVectorDrawable) d;
+                        mAnimationDrawable.start();
+                    }
 
                     Completable
                             .complete()

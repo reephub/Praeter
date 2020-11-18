@@ -56,7 +56,17 @@
     <string name="title_activity_plan">Plan</string>
 
     <!-- Premium Plan -->
-    <string name="title_activity_premium">Premium Plan</string>
+    <string name="title_activity_premium_plan">Premium Plan</string>
+    <string name="enter_credit_card_info">Please, enter your bank details</string>
+    <string name="hint_credit_card_owner_name">Card Owner Name</string>
+    <string name="hint_credit_card_number">Card Number</string>
+    <string name="credit_card_numbers_digits">"0123456789 "</string>
+    <string name="hint_credit_card_validity_time">Validity Period</string>
+    <string name="hint_credit_card_ccv">CCV</string>
+    <string name="msg_secure_transactions">Secured transactions via CB, Visa or MasterCard.<br />Important : we ensure that your data is not stored or analyzed at anytime.</string>
+    <string name="err_msg_credit_card_number">Wrong card number. Make sure that the credit card contains 16 characters</string>
+    <string name="err_msg_credit_card_ccv">Enter valid CCV number [ex : 254, 632, …]</string>
+
 
     <!-- Successful Sign Up -->
     <string name="title_activity_successful_sign_up">Validation</string>
