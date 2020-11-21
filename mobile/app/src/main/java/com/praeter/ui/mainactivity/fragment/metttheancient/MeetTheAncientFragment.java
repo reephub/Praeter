@@ -1,4 +1,4 @@
-package com.praeter.ui.mainactivity.fragment.classes;
+package com.praeter.ui.mainactivity.fragment.metttheancient;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.praeter.R;
 import com.praeter.core.utils.PraeterNetworkManager;
-import com.praeter.data.local.model.Class;
+import com.praeter.data.local.model.Ancient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,34 +29,34 @@ import timber.log.Timber;
 
 
 @SuppressLint("NonConstantResourceId")
-public class ClassesFragment extends Fragment
-        implements ClassClickListener {
+public class MeetTheAncientFragment extends Fragment
+        implements AncientClickListener {
 
     private Context context;
 
-    @BindView(R.id.rv_classes)
-    RecyclerView rvClasses;
+    @BindView(R.id.rv_ancients)
+    RecyclerView rvAncients;
     private Unbinder unbinder;
 
     /**
      * passing data between fragments
      */
-    private OnClassItemSelectedListener listener;
+    private OnMeetTheAncientItemSelectedListener listener;
 
-    public interface OnClassItemSelectedListener {
-        void onClassClick(String className, String classType);
+
+    public interface OnMeetTheAncientItemSelectedListener {
+        void onAncientClick(String ancientName, String ancientDescription);
     }
 
 
-    public static ClassesFragment newInstance() {
+    public static MeetTheAncientFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        ClassesFragment fragment = new ClassesFragment();
+        MeetTheAncientFragment fragment = new MeetTheAncientFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
 
     ///////////////////////////////////////////
     //
@@ -66,23 +66,22 @@ public class ClassesFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnClassItemSelectedListener) {
-            listener = (OnClassItemSelectedListener) context;
+        if (context instanceof MeetTheAncientFragment.OnMeetTheAncientItemSelectedListener) {
+            listener = (OnMeetTheAncientItemSelectedListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + " must implement MainActivity.OnClassItemSelectedListener");
+                    + " must implement MainActivity.OnMeetTheAncientItemSelectedListener");
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.fragment_classes, container, false);
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_meet_the_ancient, container, false);
         unbinder = ButterKnife.bind(this, root);
         return root;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -97,28 +96,23 @@ public class ClassesFragment extends Fragment
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
         } else {
 
+            List<Ancient> ancientList = prepareAncientData();
 
-            List<Class> classList = prepareClassData();
-
-            ClassAdapter adapter = new ClassAdapter(context, classList, this);
+            AncientAdapter adapter = new AncientAdapter(context, ancientList, this);
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-            rvClasses.setLayoutManager(linearLayoutManager);
-            rvClasses.setItemAnimator(new DefaultItemAnimator());
-            rvClasses.setAdapter(adapter);
+            rvAncients.setLayoutManager(linearLayoutManager);
+            rvAncients.setItemAnimator(new DefaultItemAnimator());
+            rvAncients.setAdapter(adapter);
         }
     }
 
-    private List<Class> prepareClassData() {
-        List<Class> list = new ArrayList<>();
+    private List<Ancient> prepareAncientData() {
+        List<Ancient> list = new ArrayList<>();
 
-        list.add(new Class("Cours 1 ", "Dance Class"));
-        list.add(new Class("Cours 2 ", "Art Class"));
-        list.add(new Class("Cours 3 ", "Gastronomic Class"));
-        list.add(new Class("Cours 4 ", "Gastronomic Class"));
-        list.add(new Class("Cours 5 ", "Dance Class"));
-        list.add(new Class("Cours 6 ", "Art Class"));
-        list.add(new Class("Cours 7 ", "Art Class"));
+        list.add(new Ancient("Ancient 1 "));
+        list.add(new Ancient("Ancient 2 "));
+        list.add(new Ancient("Ancient 3 "));
 
         return list;
     }
@@ -130,10 +124,11 @@ public class ClassesFragment extends Fragment
         super.onDestroyView();
     }
 
+
     @Override
-    public void onClassItemCLickListener(View view, Class item, int position) {
+    public void onAncientItemCLickListener(View view, Ancient item, int position) {
 
         // send data to activity
-        listener.onClassClick(item.getName(), item.getType());
+        listener.onAncientClick(item.getName(), item.getName());
     }
 }

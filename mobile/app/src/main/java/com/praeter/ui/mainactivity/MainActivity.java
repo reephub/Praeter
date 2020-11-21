@@ -16,20 +16,21 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.praeter.R;
+import com.praeter.data.local.model.Ancient;
 import com.praeter.data.local.model.Class;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseActivity;
 import com.praeter.ui.mainactivity.fragment.classes.ClassesFragment;
 import com.praeter.ui.mainactivity.fragment.home.HomeFragment;
-
-import org.parceler.Parcels;
+import com.praeter.ui.mainactivity.fragment.metttheancient.MeetTheAncientFragment;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity<MainActivityView>
-        implements ClassesFragment.OnClassItemSelectedListener {
+        implements ClassesFragment.OnClassItemSelectedListener,
+        MeetTheAncientFragment.OnMeetTheAncientItemSelectedListener {
 
 
     // Views
@@ -127,6 +128,12 @@ public class MainActivity extends BaseActivity<MainActivityView>
     @Override
     public void onClassClick(String className, String classType) {
         BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(new Class(className, classType));
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+    }
+
+    @Override
+    public void onAncientClick(String ancientName, String ancientDescription) {
+        BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(new Ancient(ancientName));
         bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
     }
 }
