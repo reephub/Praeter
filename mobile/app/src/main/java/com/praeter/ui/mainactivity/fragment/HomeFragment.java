@@ -17,6 +17,11 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +36,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,10 +44,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -52,25 +52,39 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.praeter.R;
-import com.praeter.data.local.bean.MapsEnum;
 import com.praeter.core.utils.DeviceManager;
+import com.praeter.data.local.bean.MapsEnum;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.content.Context.LOCATION_SERVICE;
 
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+@SuppressLint("NonConstantResourceId")
+public class HomeFragment extends Fragment
+        implements OnMapReadyCallback, LocationListener {
 
     public static final String TAG = "HomeFragmentTag";
 
     private Context context;
+
+    @BindView(R.id.rl_maps_laoding)
+    RelativeLayout rlMapsLoading;
+
+    Unbinder unbinder;
 
     SupportMapFragment mapFragment;
     private GoogleMap mMap;
@@ -107,18 +121,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     /*@Inject
     HomeFragment(){}*/
 
+    /////////////////////////////////////
+    //
+    // INSTANCE
+    //
+    /////////////////////////////////////
     public HomeFragment newInstance() {
         return new HomeFragment();
     }
 
+
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
         Timber.i("onCreateView()");
 
-        return inflater.inflate(R.layout.fragment_home, container, false);
-//        return root;
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        unbinder = ButterKnife.bind(this, root);
+
+        return root;
     }
 
     @Override
@@ -159,9 +187,156 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 })
                 .onSameThread()
                 .check();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.e("onActivityResult()");
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Timber.e("User agreed to make required location settings changes.");
+                        // Nothing to do. startLocationupdates() gets called in onResume again.
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Timber.e("User chose not to make required location settings changes.");
+                        mRequestingLocationUpdates = false;
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Timber.e("onPause()");
+        if (mRequestingLocationUpdates) {
+            // pausing location updates
+            stopLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Timber.e("onResume()");
+        // Resuming location updates depending on button state and
+        // allowed permissions
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+
+        updateLocationUI();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Timber.e("onDestroyView()");
+        if (null != unbinder)
+            unbinder.unbind();
+
+        super.onDestroyView();
+    }
+
+
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * <p>
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Timber.i("onMapReady()");
+        mMap = googleMap;
+
+        // Set a preference for minimum and maximum zoom.
+        mMap.setMinZoomPreference(MapsEnum.WORLD.getDistance());
+        mMap.setMaxZoomPreference(MapsEnum.DEFAULT_MAX_ZOOM.getDistance());
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.getDistance()));
+
+        // Add a marker in Sydney and move the camera
+        /*LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions()
+                .position(sydney)
+                .title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
+
+        Completable.complete()
+                .delay(3, TimeUnit.SECONDS)
+                .doOnComplete(() -> requireActivity().runOnUiThread(this::setLocationSettings))
+                .doOnError(Timber::e)
+                .doAfterTerminate(() -> requireActivity().runOnUiThread(this::hideLoading))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
+        // Remove markers
+        mMap.clear();
+
+        Timber.i("onLocationChanged()");
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        Timber.e("Lat : %s - Lon : %s", latitude, longitude);
+
+        LatLng latLng = new LatLng(latitude, longitude);
+        mMap.addMarker(
+                new MarkerOptions()
+                        .position(latLng)
+                        .title(
+                                DeviceManager.getDeviceLocationToString(
+                                        geocoder,
+                                        location,
+                                        context)));
+        mMap.setMyLocationEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(750), 2000, null);
+        mMap.getUiSettings().setScrollGesturesEnabled(true);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
 
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+        Timber.d("onProviderEnabled()");
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Timber.d("onProviderDisabled()");
+
+    }
+
+
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
     private void initLocationSettings() {
         Timber.i("initLocationSettings()");
 
@@ -194,7 +369,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         geocoder = new Geocoder(context, Locale.getDefault());
     }
 
-
     private void setupMap() {
         Timber.i("setupMap()");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -204,9 +378,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
     }
-
 
     public void setLocationSettings() {
         Timber.i("setLocationSettings()");
@@ -236,99 +408,39 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * <p>
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        Timber.i("onMapReady()");
-        mMap = googleMap;
-
-        // Set a preference for minimum and maximum zoom.
-        mMap.setMinZoomPreference(MapsEnum.WORLD.getDistance());
-        mMap.setMaxZoomPreference(MapsEnum.BUILDINGS.getDistance());
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.getDistance()));
-
-        // Add a marker in Sydney and move the camera
-        /*LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
-
-        setLocationSettings();
+    private void hideLoading() {
+        if (null != rlMapsLoading
+                && rlMapsLoading.getVisibility() == View.VISIBLE)
+            startAnimation(rlMapsLoading);
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
+    public void startAnimation(final View view) {
+        Timber.d("startAnimation()");
 
-        // Remove markers
-        mMap.clear();
+        Animation animFadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+        animFadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                Timber.d("onAnimationStart()");
+            }
 
-        Timber.i("onLocationChanged()");
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Timber.d("onAnimationEnd()");
+                view.setVisibility(View.GONE);
+            }
 
-        Timber.e("Lat : %s - Lon : %s", latitude, longitude);
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                Timber.d("onAnimationRepeat()");
+            }
+        });
 
-        LatLng latLng = new LatLng(latitude, longitude);
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(latLng)
-                        .title(
-                                DeviceManager.getDeviceLocationToString(
-                                        geocoder,
-                                        location,
-                                        context)));
-        mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(750), 2000, null);
-    }
+        final AnimationSet mAnimationSet = new AnimationSet(true);
+        mAnimationSet.setInterpolator(new AccelerateInterpolator());
+        mAnimationSet.addAnimation(animFadeOut);
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-        Timber.d("onProviderEnabled()");
-
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Timber.d("onProviderDisabled()");
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Timber.e("onActivityResult()");
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Timber.e("User agreed to make required location settings changes.");
-                        // Nothing to do. startLocationupdates() gets called in onResume again.
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Timber.e("User chose not to make required location settings changes.");
-                        mRequestingLocationUpdates = false;
-                        break;
-                }
-                break;
-        }
+        view.startAnimation(mAnimationSet);
     }
 
     /**
@@ -339,50 +451,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private void startLocationUpdates() {
         mSettingsClient
                 .checkLocationSettings(mLocationSettingsRequest)
-                .addOnSuccessListener((Activity) context, new OnSuccessListener<LocationSettingsResponse>() {
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        Timber.i("All location settings are satisfied.");
+                .addOnSuccessListener((Activity) context, locationSettingsResponse -> {
+                    Timber.i("All location settings are satisfied.");
 
-                        Toast.makeText(context.getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
 
-                        //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(
-                                mLocationRequest,
-                                mLocationCallback,
-                                Looper.myLooper());
+                    //noinspection MissingPermission
+                    mFusedLocationClient.requestLocationUpdates(
+                            mLocationRequest,
+                            mLocationCallback,
+                            Looper.myLooper());
 
-                        updateLocationUI();
-                    }
+                    updateLocationUI();
                 })
-                .addOnFailureListener((Activity) context, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        int statusCode = ((ApiException) e).getStatusCode();
-                        switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                Timber.i("Location settings are not satisfied. Attempting to upgrade location settings ");
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult((Activity) context, REQUEST_CHECK_SETTINGS);
-                                } catch (IntentSender.SendIntentException sie) {
-                                    Timber.i("PendingIntent unable to execute request.");
-                                }
-                                break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                String errorMessage = "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
-                                Timber.e(errorMessage);
+                .addOnFailureListener((Activity) context, e -> {
+                    int statusCode = ((ApiException) e).getStatusCode();
+                    switch (statusCode) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            Timber.i("Location settings are not satisfied. Attempting to upgrade location settings ");
+                            try {
+                                // Show the dialog by calling startResolutionForResult(), and check the
+                                // result in onActivityResult().
+                                ResolvableApiException rae = (ResolvableApiException) e;
+                                rae.startResolutionForResult((Activity) context, REQUEST_CHECK_SETTINGS);
+                            } catch (IntentSender.SendIntentException sie) {
+                                Timber.i("PendingIntent unable to execute request.");
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            String errorMessage = "Location settings are inadequate, and cannot be " +
+                                    "fixed here. Fix in Settings.";
+                            Timber.e(errorMessage);
 
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
-                                break;
-                        }
-
-                        updateLocationUI();
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                            break;
                     }
+
+                    updateLocationUI();
                 });
     }
 
@@ -390,12 +495,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Removing location updates
         mFusedLocationClient
                 .removeLocationUpdates(mLocationCallback)
-                .addOnCompleteListener((Activity) context, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(context.getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener((Activity) context, task -> {
+                    Toast.makeText(
+                            context.getApplicationContext(),
+                            "Location updates stopped!",
+                            Toast.LENGTH_SHORT).show();
 //                        toggleButtons();
-                    }
                 });
     }
 
@@ -420,6 +525,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                         1);
 
                 Timber.e(addresses.get(0).getCountryName());
+
             } catch (IOException ioException) {
                 // Catch network or other I/O problems.
 //            errorMessage = getString(R.string.service_not_available);
@@ -432,36 +538,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                         ", Longitude = " +
                         mCurrentLocation.getLongitude());
             }
-
-            // giving a blink animation on TextView
-            /*txtLocationResult.setAlpha(0);
-            txtLocationResult.animate().alpha(1).setDuration(300);
-
-            // location last updated time
-            txtUpdatedOn.setText("Last updated on: " + mLastUpdateTime);*/
         }
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mRequestingLocationUpdates) {
-            // pausing location updates
-            stopLocationUpdates();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Resuming location updates depending on button state and
-        // allowed permissions
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-
-        updateLocationUI();
-
     }
 }

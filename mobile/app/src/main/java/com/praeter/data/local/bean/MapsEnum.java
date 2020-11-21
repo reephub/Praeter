@@ -11,7 +11,9 @@ public enum MapsEnum {
     LANDMASS(5.0f),
     CITY(10.0f),
     STREETS(15.0f),
-    BUILDINGS(20.0f);
+    BUILDINGS(20.0f),
+
+    DEFAULT_MAX_ZOOM(19.0f);
 
     private final float distance;
 

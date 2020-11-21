@@ -2,13 +2,17 @@ package com.praeter.ui.signup.userform;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -28,7 +32,6 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class UserFormView extends BaseViewImpl<UserFormPresenter>
         implements UserFormContract.View {
-
 
     // TAG & Context
     private UserFormActivity context;
@@ -57,11 +60,16 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
     TextInputLayout inputLayoutPassword;
     @BindView(R.id.input_password)
     TextInputEditText inputPassword;
+    @BindView(R.id.btn_password_visibility)
+    ImageButton btnPasswordVisibility;
     // Confirm password
     @BindView(R.id.input_layout_confirm_password)
     TextInputLayout inputLayoutConfirmPassword;
     @BindView(R.id.input_confirm_password)
     TextInputEditText inputConfirmPassword;
+
+    boolean isPasswordVisible = false;
+
     // Phone Number
     @BindView(R.id.input_layout_phone_number)
     TextInputLayout inputLayoutPhoneNumber;
@@ -147,6 +155,26 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
         Timber.d("check if field are correctly filled");
 
         getPresenter().goToPlanActivity();
+    }
+
+    @OnClick(R.id.btn_password_visibility)
+    void onPasswordVisibilityButtonClicked() {
+        Timber.d("onPasswordVisibilityButtonClicked()");
+
+        // If flag is false - password hidden (default)
+        if (!isPasswordVisible) {
+            inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            btnPasswordVisibility.setImageDrawable(context.getDrawable(R.drawable.ic_visibility_off));
+            // Tint color programmatically
+            // https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android
+            btnPasswordVisibility.setColorFilter(ContextCompat.getColor(context, R.color.purple_200), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            btnPasswordVisibility.setImageDrawable(context.getDrawable(R.drawable.ic_visibility));
+            btnPasswordVisibility.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
+        isPasswordVisible = !isPasswordVisible;
     }
 
     @Override

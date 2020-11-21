@@ -5,14 +5,19 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -46,8 +51,11 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
     @BindView(R.id.input_password)
     TextInputEditText inputPassword;
 
-    @BindView(R.id.no_account_register)
-    TextView tvNoAccount;
+    @BindView(R.id.btn_password_visibility)
+    ImageButton btnPasswordVisibility;
+
+    @BindView(R.id.btn_no_account_register)
+    Button tvNoAccount;
 
     @BindView(R.id.btn_enter)
     Button btnEnter;
@@ -55,6 +63,7 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    boolean isPasswordVisible = false;
 
     @Inject
     Navigator navigator;
@@ -139,13 +148,33 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
         context = null;
     }
 
+    @OnClick(R.id.btn_password_visibility)
+    void onPasswordVisibilityButtonClicked() {
+        Timber.d("onPasswordVisibilityButtonClicked()");
+
+        // If flag is false - password hidden (default)
+        if (!isPasswordVisible) {
+            inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            btnPasswordVisibility.setImageDrawable(context.getDrawable(R.drawable.ic_visibility_off));
+            // Tint color programmatically
+            // https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android
+            btnPasswordVisibility.setColorFilter(ContextCompat.getColor(context, R.color.purple_200), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            btnPasswordVisibility.setImageDrawable(context.getDrawable(R.drawable.ic_visibility));
+            btnPasswordVisibility.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
+        isPasswordVisible = !isPasswordVisible;
+    }
+
 
     @OnClick(R.id.btn_enter)
     void onButtonClicked() {
         login();
     }
 
-    @OnClick(R.id.no_account_register)
+    @OnClick(R.id.btn_no_account_register)
     void onNoAccountClicked() {
         navigator.callSignUpActivity();
     }

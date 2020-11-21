@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/small_margin"
-    android:paddingBottom="@dimen/small_margin"
+    android:padding="@dimen/small_margin"
     tools:background="@color/oil">
 
     <!-- Credit card message -->
@@ -44,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_credit_card_owner_name"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:inputType="textCapCharacters"
                 android:maxLines="1"
                 android:singleLine="true" />

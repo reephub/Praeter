@@ -11,8 +11,6 @@ e
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-]
--app/src/main/res/drawable/ic_praeter_logo.xml,2\0\200b99b303af63c0394409ee7a04117e00c9e5d9
 o
 ?app/src/main/java/com/praeter/ui/mainactivity/MainActivity.java,0\d\0df5eb8a88da4efcf5a24cf6fe4f6ced996894cc
 w
@@ -100,10 +98,6 @@ w
 Gapp/src/main/java/com/praeter/ui/signup/userform/UserFormPresenter.java,7\9\79c15751be26c8dfbb1d729ec5fd6607811257af
 y
 Iapp/src/main/java/com/praeter/ui/signup/license/LicenseAgreementView.java,e\9\e9e856a6a98fc9701e3f92fa9d5903abbc1b4596
-X
-(app/src/main/res/drawable/check_anim.xml,2\2\22460f0240d09d0dfe8c7ef00bd13f6e963d04c2
-Q
-!app/src/main/res/anim/fade_in.xml,8\1\8100e04b0cee48bb99d93aca317b87373fbba39a
 j
 :app/src/main/res/layout/free_plan_radio_button_content.xml,b\2\b2f38b450e96be2fd4d79afef4b99117d121f1e7
 o
@@ -126,3 +120,5 @@ Vapp/src/main/java/com/praeter/ui/signup/successfulsignup/SuccessfulSignUpActivi
 Lapp/src/main/java/com/praeter/ui/signup/premiumplan/PremiumPlanActivity.java,1\c\1ccc4e3c9a56ac6dad306b7ca41a1ffc55f0b0ed
 x
 Happ/src/main/java/com/praeter/ui/signup/premiumplan/PremiumPlanView.java,4\b\4b4ae3d57ee7dd0d5fc40076025e5dedda870740
+S
+#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e

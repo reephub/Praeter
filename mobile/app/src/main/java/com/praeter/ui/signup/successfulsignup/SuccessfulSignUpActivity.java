@@ -2,7 +2,6 @@ package com.praeter.ui.signup.successfulsignup;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -26,24 +25,30 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
-public class SuccessfulSignUpActivity extends SimpleActivity {
+public class SuccessfulSignUpActivity extends SimpleActivity implements Animation.AnimationListener {
 
+    // views
     @BindView(R.id.tv_title_congratulations)
     TextView tvTitleCongratulations;
 
     @BindView(R.id.tv_congratulations_msg)
     TextView tvCongratulationsMsg;
 
+    @BindView(R.id.iv_animated_check)
+    ImageView ivCheck;
+
     @BindView(R.id.btn_continue)
     Button btnContinue;
 
-    @BindView(R.id.iv_animated_check)
-    ImageView ivCheck;
 
     AnimatedVectorDrawable mAnimationDrawable;
 
@@ -66,6 +71,7 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
 
         navigator = new Navigator(this);
 
+
         startAnimation(tvTitleCongratulations);
 
         Completable
@@ -73,13 +79,14 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
                 .delay(500, TimeUnit.MILLISECONDS)
                 .doOnComplete(() -> startAnimation(tvCongratulationsMsg))
                 .doOnError(Timber::e)
+                .doAfterTerminate(() -> startAnimation(ivCheck))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
 
     }
 
-    public void startAnimation(View view) {
+    public void startAnimation(final View view) {
         Timber.d("startAnimation()");
 
         animFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -88,23 +95,28 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
             public void onAnimationStart(Animation animation) {
                 Timber.d("onAnimationStart()");
 
-                if (view == tvCongratulationsMsg)
+                view.setVisibility(View.VISIBLE);
+
+                if (view == ivCheck)
                     hasMsgAnimationStarted = true;
 
-                view.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 Timber.d("onAnimationEnd()");
 
-                if (hasMsgAnimationStarted) {
+                if (view == ivCheck) {
                     Drawable d = ivCheck.getDrawable();
 
                     if (d instanceof AnimatedVectorDrawable) {
                         mAnimationDrawable = (AnimatedVectorDrawable) d;
                         mAnimationDrawable.start();
                     }
+                }
+
+
+                if (hasMsgAnimationStarted) {
 
                     Completable
                             .complete()
@@ -168,5 +180,21 @@ public class SuccessfulSignUpActivity extends SimpleActivity {
     @OnClick(R.id.btn_continue)
     void onContinueButtonClicked() {
         navigator.callMainActivity();
+    }
+
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }

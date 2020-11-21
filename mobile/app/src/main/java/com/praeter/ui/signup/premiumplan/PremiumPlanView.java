@@ -14,6 +14,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.praeter.R;
 import com.praeter.ui.base.BaseViewImpl;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -131,6 +133,7 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
                 .show();
 
         Completable.complete()
+                .delay(2, TimeUnit.SECONDS)
                 .doOnComplete(() -> getPresenter().goToSuccessfulSignUpActivity())
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
