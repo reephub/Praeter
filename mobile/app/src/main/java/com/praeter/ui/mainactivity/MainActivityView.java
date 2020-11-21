@@ -32,24 +32,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
-    /*@BindView(R.id.app_recyclerView)
-    RecyclerView appRecyclerView;*/
-    /*@BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.progressBar_api)
-    ProgressBar progressBar;
-    @BindView(R.id.linear_fetching_data)
-    LinearLayout linearFetchData;
-    @BindView(R.id.rv_movie)
-    RecyclerView rvMovie;
-    @BindView(R.id.btn_quit_app)
-    Button btnExitApp;*/
-
-    //@Inject
-    //MoviesApiListAdapter apiAdapter;
-
-    //@Inject
-    //MovieDatabaseListAdapter databaseAdapter;
 
 
     @Inject
@@ -71,8 +53,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         // Butterknife view binding
         ButterKnife.bind(context);
 
-        // Call presenter to fetch data
-//        getPresenter().getApplications();
     }
 
     public void onDestroy() {

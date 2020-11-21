@@ -2,6 +2,7 @@ package com.praeter.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.praeter.R;
 import com.praeter.core.utils.PraeterNetworkManager;
+import com.praeter.data.local.model.Ancient;
 import com.praeter.data.local.model.Class;
 
 import org.parceler.Parcels;
@@ -28,6 +30,7 @@ import org.parceler.Parcels;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
 
@@ -52,7 +55,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     @BindView(R.id.btn_book)
     Button btnBook;
 
-    private Class storedClass;
+    private Unbinder unbinder;
+
+    private Object storedClass;
 
 
     public static BottomSheetFragment newInstance() {
@@ -78,6 +83,20 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         return fragment;
     }
 
+
+    public static BottomSheetFragment newInstance(Ancient ancientItem) {
+
+        Bundle args = new Bundle();
+
+        Parcelable parcelable = Parcels.wrap(Ancient.class, ancientItem);
+
+        args.putParcelable(CLASS_ITEM_BUNDLE, parcelable);
+
+        BottomSheetFragment fragment = new BottomSheetFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public BottomSheetFragment() {
         // Required empty public constructor
     }
@@ -92,7 +111,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                         R.layout.fragment_bottom_sheet_dialog,
                         container,
                         false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -110,6 +129,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     @OnClick(R.id.btn_book)
     void onReserveButtonClicked() {
+        Timber.i("onReserveButtonClicked()");
         if (!PraeterNetworkManager.isConnected(context)) {
             String errorMessage = "Not connected to the internet. Check your internet connection.";
             Timber.e(errorMessage);
@@ -117,18 +137,22 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             return;
         }
 
-        String message = "You've successfully reserved the class " + storedClass.getName();
+        String message = "You've successfully reserved the class " +
+                ((storedClass instanceof Class)
+                        ? ((Class) storedClass).getName()
+                        : ((Ancient) storedClass).getName());
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 
     }
 
     @OnClick(R.id.close_bottom_sheet_btn)
     void onCloseButtonClicked() {
+        Timber.i("onCloseButtonClicked()");
         dismiss();
     }
 
     private void getClassData() {
-        Timber.i("getDeviceInfo()");
+        Timber.i("getClassData()");
 
         assert getArguments() != null;
         if (null == getArguments().getParcelable(CLASS_ITEM_BUNDLE)) {
@@ -138,7 +162,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         storedClass = Parcels.unwrap(getArguments().getParcelable(CLASS_ITEM_BUNDLE));
 
-        setViews(storedClass);
+        if (storedClass instanceof Class)
+            setViews((Class) storedClass);
+
+        else if (storedClass instanceof Ancient)
+            setViews((Ancient) storedClass);
     }
 
     @SuppressLint("SetTextI18n")
@@ -154,8 +182,30 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         tvType.setText(classItem.getType());
     }
 
+
+    @SuppressLint("SetTextI18n")
+    private void setViews(Ancient ancientItem) {
+        Glide.with(this)
+                .load(R.drawable.visa_icon)
+                .transform(
+                        new BlurTransformation(75),
+                        new RoundedCorners(48))
+                .into(ivThumbBlurred);
+
+        tvName.setText(ancientItem.getName());
+        tvType.setText(ancientItem.getName());
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        Timber.e("onDismiss()");
+    }
+
     @Override
     public void onDestroyView() {
+        if (null != unbinder)
+            unbinder.unbind();
         super.onDestroyView();
         Timber.e("DestroyView()");
     }

@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.praeter.ui.mainactivity.fragment.metttheancient.SlideshowFragment"
+        android:name="com.praeter.ui.mainactivity.fragment.metttheancient.MeetTheAncientFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_meet_the_ancient" />
 </navigation>

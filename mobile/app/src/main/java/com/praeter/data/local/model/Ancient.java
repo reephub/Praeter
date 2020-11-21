@@ -2,6 +2,9 @@ package com.praeter.data.local.model;
 
 import android.location.Location;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +12,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
+@Parcel(Parcel.Serialization.BEAN)
 public class Ancient {
 
     String name;
