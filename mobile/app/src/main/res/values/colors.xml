@@ -30,4 +30,11 @@
     <color name="list_divider">#dedede</color>
     <color name="bg_bubble_self">#E1E1E1</color>
 
+    <color name="bg_gradient_start">#31244e</color>
+    <color name="bg_gradient_end">#6b394c</color>
+
+    <color name="good">#43A047</color>
+    <color name="warning">#FB8C00</color>
+    <color name="error">#d32f2f</color>
+
 </resources>

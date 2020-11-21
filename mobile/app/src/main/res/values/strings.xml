@@ -84,4 +84,5 @@
     <string name="menu_home">Next To Me</string>
     <string name="menu_gallery">Classes</string>
     <string name="menu_slideshow">Meet the Ancient</string>
+    <string name="book_class_btn">Book this class</string>
 </resources>

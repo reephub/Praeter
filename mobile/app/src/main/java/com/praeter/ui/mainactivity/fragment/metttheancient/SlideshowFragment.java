@@ -1,4 +1,4 @@
-package com.praeter.ui.mainactivity.fragment;
+package com.praeter.ui.mainactivity.fragment.metttheancient;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,12 +12,13 @@ import androidx.fragment.app.Fragment;
 import com.praeter.R;
 
 
-public class GalleryFragment extends Fragment {
+public class SlideshowFragment extends Fragment {
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
+        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
+        final TextView textView = root.findViewById(R.id.text_slideshow);
         return root;
     }
 }
