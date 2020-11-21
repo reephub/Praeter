@@ -3,7 +3,7 @@ package com.praeter.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class MyPreferenceManager {
+public class PraeterPreferenceManager {
 
     // Shared Preferences
     SharedPreferences pref;
@@ -27,7 +27,7 @@ public class MyPreferenceManager {
     private static final String KEY_NOTIFICATIONS = "notifications";
 
     // Constructor
-    public MyPreferenceManager(Context context) {
+    public PraeterPreferenceManager(Context context) {
         this.mContext = context;
         pref = mContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         //pref = mContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);

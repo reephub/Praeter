@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 // version information
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 6
+def versionPatch = 7
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -111,13 +111,24 @@ dependencies {
     implementation rootProject.ext.generalDependencies.butterknife
     annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
+    // Glide
     implementation rootProject.ext.generalDependencies.glide
+    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+
+    // Blurry
+    implementation rootProject.ext.generalDependencies.blurry
+    implementation rootProject.ext.generalDependencies.glideTransformation
+
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit
     implementation rootProject.ext.generalDependencies.retrofitConverterGson
     implementation rootProject.ext.generalDependencies.retrofitRxJava
     implementation rootProject.ext.generalDependencies.okhttp3Logging
+
+    // Parceler
+    implementation rootProject.ext.generalDependencies.parceler
+    annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
 
 
     // Dexter : permissions
@@ -132,8 +143,6 @@ dependencies {
     // Lombok
     compileOnly rootProject.ext.generalDependencies.lombok
     annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
-
-
 
 
     testImplementation 'junit:junit:4.+'

@@ -10,8 +10,8 @@ import com.praeter.data.DataModule;
 import com.praeter.di.component.DaggerComponentInjector;
 import com.praeter.di.module.ApplicationModule;
 import com.praeter.ui.login.LoginActivity;
-import com.praeter.core.utils.DeviceManager;
-import com.praeter.core.utils.MyPreferenceManager;
+import com.praeter.core.utils.PraeterDeviceManager;
+import com.praeter.core.utils.PraeterPreferenceManager;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
@@ -22,7 +22,7 @@ public class PraeterApplication extends DaggerApplication {
     private static Context mContext;
     private static PraeterApplication mInstance;
 
-    private MyPreferenceManager pref;
+    private PraeterPreferenceManager pref;
 
     public static synchronized PraeterApplication getInstance() {
         if (mInstance == null) {
@@ -70,8 +70,8 @@ public class PraeterApplication extends DaggerApplication {
         // Operations on FirebaseCrashlytics.
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         crashlytics.setUserId("Wayne-ID");// Set a key to a string.
-        crashlytics.setCustomKey("Device", DeviceManager.getManufacturer());
-        crashlytics.setCustomKey("Model", DeviceManager.getModel());
+        crashlytics.setCustomKey("Device", PraeterDeviceManager.getManufacturer());
+        crashlytics.setCustomKey("Model", PraeterDeviceManager.getModel());
         crashlytics.setCustomKey("Location", "Why?");
         crashlytics.setCustomKey("int_key", 23);
         crashlytics.setCustomKey("boolean_key", false);
@@ -92,9 +92,9 @@ public class PraeterApplication extends DaggerApplication {
     }
 
 
-    public MyPreferenceManager getPrefManager() {
+    public PraeterPreferenceManager getPrefManager() {
         if (pref == null) {
-            pref = new MyPreferenceManager(getContext());
+            pref = new PraeterPreferenceManager(getContext());
         }
 
         return pref;

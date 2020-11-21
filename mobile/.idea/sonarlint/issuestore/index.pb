@@ -56,8 +56,6 @@ h
 8app/src/main/java/com/praeter/ui/base/BasePresenter.java,2\e\2ee0ab296fea19d7d045c1b82b8c8960f66c5d3f
 c
 3app/src/main/java/com/praeter/ui/base/BaseView.java,a\3\a398db67c060c01c79cd3c95ed0fab191e36c5d2
-R
-"app/src/main/res/values/themes.xml,e\b\eb7f0f821bde169dd21862705b2b042d2cea69a3
 u
 Eapp/src/main/java/com/praeter/ui/splashscreen/SplashScreenModule.java,2\9\29cfa622159bc1b91aa6fec546bb290e0e45780d
 g
@@ -72,8 +70,6 @@ Happ/src/main/java/com/praeter/ui/mainactivity/fragment/HomeFragment.java,0\a\0
 Mapp/src/main/java/com/praeter/ui/signup/license/LicenseAgreementActivity.java,6\1\617c62ba1bee9fc4de808399b240f0d893e9ec2b
 {
 Kapp/src/main/java/com/praeter/ui/signup/license/LicenseAgreementModule.java,1\7\17ea1054233325acb4d812c6f58d98ab5fc721a0
-a
-1app/src/main/res/navigation/mobile_navigation.xml,5\0\50c7987ff387678f825775665976b5fc8ed47989
 }
 Mapp/src/main/java/com/praeter/ui/mainactivity/fragment/SlideshowFragment.java,0\2\02258ed3ebf635dd94f30945dd1fae24083e1d09
 v
@@ -120,5 +116,3 @@ Vapp/src/main/java/com/praeter/ui/signup/successfulsignup/SuccessfulSignUpActivi
 Lapp/src/main/java/com/praeter/ui/signup/premiumplan/PremiumPlanActivity.java,1\c\1ccc4e3c9a56ac6dad306b7ca41a1ffc55f0b0ed
 x
 Happ/src/main/java/com/praeter/ui/signup/premiumplan/PremiumPlanView.java,4\b\4b4ae3d57ee7dd0d5fc40076025e5dedda870740
-S
-#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e

@@ -1,4 +1,4 @@
-package com.praeter.ui.mainactivity.fragment;
+package com.praeter.ui.mainactivity.fragment.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -36,7 +36,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,12 +46,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.praeter.R;
-import com.praeter.core.utils.DeviceManager;
+import com.praeter.core.utils.PraeterLocationManager;
 import com.praeter.data.local.bean.MapsEnum;
 
 import java.io.IOException;
@@ -71,6 +68,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.google.android.gms.common.api.CommonStatusCodes.RESOLUTION_REQUIRED;
+import static com.google.android.gms.location.LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE;
 
 
 @SuppressLint("NonConstantResourceId")
@@ -136,6 +135,7 @@ public class HomeFragment extends Fragment
     // OVERRIDE
     //
     /////////////////////////////////////
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -179,12 +179,7 @@ public class HomeFragment extends Fragment
                         permissionToken.continuePermissionRequest();
                     }
                 })
-                .withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError dexterError) {
-                        Timber.e(dexterError.toString());
-                    }
-                })
+                .withErrorListener(dexterError -> Timber.e(dexterError.toString()))
                 .onSameThread()
                 .check();
     }
@@ -193,20 +188,20 @@ public class HomeFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.e("onActivityResult()");
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Timber.e("User agreed to make required location settings changes.");
-                        // Nothing to do. startLocationupdates() gets called in onResume again.
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Timber.e("User chose not to make required location settings changes.");
-                        mRequestingLocationUpdates = false;
-                        break;
-                }
-                break;
+        // Check for the integer request code originally supplied to startResolutionForResult().
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Timber.e("User agreed to make required location settings changes.");
+                    // Nothing to do. startLocationupdates() gets called in onResume again.
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Timber.e("User chose not to make required location settings changes.");
+                    mRequestingLocationUpdates = false;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -269,13 +264,6 @@ public class HomeFragment extends Fragment
         mMap.setMaxZoomPreference(MapsEnum.DEFAULT_MAX_ZOOM.getDistance());
         mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.getDistance()));
 
-        // Add a marker in Sydney and move the camera
-        /*LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
-
         Completable.complete()
                 .delay(3, TimeUnit.SECONDS)
                 .doOnComplete(() -> requireActivity().runOnUiThread(this::setLocationSettings))
@@ -304,7 +292,7 @@ public class HomeFragment extends Fragment
                 new MarkerOptions()
                         .position(latLng)
                         .title(
-                                DeviceManager.getDeviceLocationToString(
+                                PraeterLocationManager.getDeviceLocationToString(
                                         geocoder,
                                         location,
                                         context)));
@@ -316,7 +304,7 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        Timber.d("onStatusChanged()");
     }
 
     @Override
@@ -465,26 +453,28 @@ public class HomeFragment extends Fragment
                     updateLocationUI();
                 })
                 .addOnFailureListener((Activity) context, e -> {
-                    int statusCode = ((ApiException) e).getStatusCode();
-                    switch (statusCode) {
-                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                            Timber.i("Location settings are not satisfied. Attempting to upgrade location settings ");
-                            try {
-                                // Show the dialog by calling startResolutionForResult(), and check the
-                                // result in onActivityResult().
-                                ResolvableApiException rae = (ResolvableApiException) e;
-                                rae.startResolutionForResult((Activity) context, REQUEST_CHECK_SETTINGS);
-                            } catch (IntentSender.SendIntentException sie) {
-                                Timber.i("PendingIntent unable to execute request.");
-                            }
-                            break;
-                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            String errorMessage = "Location settings are inadequate, and cannot be " +
-                                    "fixed here. Fix in Settings.";
-                            Timber.e(errorMessage);
 
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
-                            break;
+                    int statusCode = ((ApiException) e).getStatusCode();
+
+                    if (statusCode == RESOLUTION_REQUIRED) {
+                        Timber.i("Location settings are not satisfied. Attempting to upgrade location settings ");
+
+                        try {
+                            // Show the dialog by calling startResolutionForResult(), and check the
+                            // result in onActivityResult().
+                            ResolvableApiException rae = (ResolvableApiException) e;
+                            rae.startResolutionForResult((Activity) context, REQUEST_CHECK_SETTINGS);
+
+                        } catch (IntentSender.SendIntentException sie) {
+                            Timber.i("PendingIntent unable to execute request.");
+                        }
+                    } else if (statusCode == SETTINGS_CHANGE_UNAVAILABLE) {
+
+                        String errorMessage = "Location settings are inadequate, and cannot be " +
+                                "fixed here. Fix in Settings.";
+                        Timber.e(errorMessage);
+
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
                     }
 
                     updateLocationUI();
@@ -495,13 +485,10 @@ public class HomeFragment extends Fragment
         // Removing location updates
         mFusedLocationClient
                 .removeLocationUpdates(mLocationCallback)
-                .addOnCompleteListener((Activity) context, task -> {
-                    Toast.makeText(
-                            context.getApplicationContext(),
-                            "Location updates stopped!",
-                            Toast.LENGTH_SHORT).show();
-//                        toggleButtons();
-                });
+                .addOnCompleteListener((Activity) context, task -> Toast.makeText(
+                        context.getApplicationContext(),
+                        "Location updates stopped!",
+                        Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -515,7 +502,7 @@ public class HomeFragment extends Fragment
 
             geocoder = new Geocoder(context, Locale.getDefault());
 
-            List<Address> addresses = null;
+            List<Address> addresses;
 
             try {
                 addresses = geocoder.getFromLocation(
