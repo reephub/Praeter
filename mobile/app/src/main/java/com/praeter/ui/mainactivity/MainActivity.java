@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -19,6 +18,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.praeter.R;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseActivity;
+import com.praeter.ui.mainactivity.fragment.HomeFragment;
 
 import javax.inject.Inject;
 

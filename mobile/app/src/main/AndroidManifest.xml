@@ -29,7 +29,7 @@
     <!-- Spécifier l'obligation d'utiliser OpenGL ES version 2 -->
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
+        android:required="true" />
 
 
     <application
@@ -73,7 +73,20 @@
             android:name=".ui.login.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
-        <activity android:name=".ui.mainactivity.MainActivity"
+        <activity android:name=".ui.signup.license.LicenseAgreementActivity" />
+
+        <activity
+            android:name=".ui.signup.userform.UserFormActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity android:name=".ui.signup.plan.PlanActivity" />
+
+        <activity android:name=".ui.signup.premiumplan.PremiumPlanActivity" />
+
+        <activity android:name=".ui.signup.successfulsignup.SuccessfulSignUpActivity" />
+
+        <activity
+            android:name=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.Praeter.NoActionBar" />
 
     </application>
