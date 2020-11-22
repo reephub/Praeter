@@ -1,0 +1,11 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3308,
+    "username": "root",
+    "password": "",
+    "database": "praeter",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "logging": "all",
+    "synchronize": true
+  }
