@@ -15,7 +15,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 import timber.log.Timber;
 
 
@@ -53,6 +60,39 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().hasPermissions(context);
 
         getPresenter().getAppVersion();
+
+        Timber.d("make call");
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client =
+                new OkHttpClient.Builder()
+                        .addInterceptor(interceptor)
+                        .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.0.48:3000/")
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        ApiService api = retrofit.create(ApiService.class);
+
+
+        api.getDbConnection()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        result -> Timber.d(result),
+                        Timber::e
+                );
+
+    }
+
+    interface ApiService {
+        @GET("users/db")
+        Single<String> getDbConnection();
     }
 
     @Override
