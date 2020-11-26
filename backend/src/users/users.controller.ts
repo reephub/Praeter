@@ -28,16 +28,30 @@ export class UsersController {
     return this.usersService.createRepository(createUserDto);
   }
 
-  @Get()
+  /* @Get()
   @Header('Content-Type', 'application/json')
   findAll() {
     return this.usersService.findAll();
+  } */
+
+
+  @Get('db')
+  @Header('Content-Type', 'application/json')
+  getDb() {
+    return this.usersService.canConnect();
+  }
+
+
+  @Get()
+  @Header('Content-Type', 'application/json')
+  findAll() {
+    return this.usersService.findAllRepository();
   }
 
   @Get(':id')
   @Header('Content-Type', 'application/json')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOneRepositorye(id);
   }
 
   @Put(':id')

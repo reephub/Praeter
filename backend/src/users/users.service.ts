@@ -38,23 +38,34 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,private connection: Connection
-  ) {
+    private usersRepository: Repository<User>,
+    private connection: Connection,
+  ) {}
 
+  canConnect() {
+    if (!this.connection.connect) {
+      console.log('Connection to the database impossible');
+      return 'databse connection failed';
+    } else {
+      console.log('Connection succesfully done');
+      return 'database connection successful';
+    }
   }
 
-  
   create(createUserDto: CreateUserDto) {
     // this.users.push(createUserDto);
+    console.log('This action adds a new user');
     return 'This action adds a new user';
   }
-  
+
   createRepository(createUserDto: CreateUserDto) {
+    console.log('createUserDto : ', createUserDto);
     this.usersRepository.insert(createUserDto);
     return 'This action adds a new user';
   }
 
   findAll() {
+    console.log('This action returns all users');
     return this.users;
     //return `This action returns all users`;
   }
@@ -71,12 +82,11 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  
   findAllRepository(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findOnRepositorye(id: string): Promise<User> {
+  findOneRepositorye(id: string): Promise<User> {
     return this.usersRepository.findOne(id);
   }
 
