@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Connection, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -42,13 +43,16 @@ export class UsersService {
     private connection: Connection,
   ) {}
 
-  canConnect() {
+  canConnect(@Res() res: Response) {
     if (!this.connection.connect) {
       console.log('Connection to the database impossible');
-      return 'databse connection failed';
+      
+      return res.status(HttpStatus.OK).json("databse connection failed");
+      //return new Response('{"message" : "databse connection failed"}');
     } else {
       console.log('Connection succesfully done');
-      return 'database connection successful';
+      return res.status(HttpStatus.OK).json("databse connection successful");
+      //return '{"message" : "database connection successful}"';
     }
   }
 
