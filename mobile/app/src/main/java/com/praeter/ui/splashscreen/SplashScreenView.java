@@ -3,6 +3,8 @@ package com.praeter.ui.splashscreen;
 import android.annotation.SuppressLint;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.praeter.R;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseViewImpl;
@@ -62,18 +64,26 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().getAppVersion();
 
         Timber.d("make call");
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        Gson gson = new GsonBuilder()
+                .disableHtmlEscaping()
+                .setLenient()
+                .create();
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.redactHeader("Authorization");
+        logging.redactHeader("Cookie");
 
         OkHttpClient client =
                 new OkHttpClient.Builder()
-                        .addInterceptor(interceptor)
+                        .addInterceptor(logging)
                         .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.0.48:3000/")
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build();
 
