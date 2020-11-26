@@ -62,6 +62,40 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().hasPermissions(context);
 
         getPresenter().getAppVersion();
+    }
+
+    interface ApiService {
+        @GET("users/db")
+        Single<String> getDbConnection();
+    }
+
+    @Override
+    public void onDestroy() {
+        getPresenter().detachView();
+        context = null;
+    }
+
+    /////////////////////////////////
+    //
+    // PRESENTER
+    //
+    /////////////////////////////////
+    @Override
+    public void onPermissionsGranted() {
+
+        Completable
+                .fromAction(() -> {
+                    makeCall();
+                })
+                .delay(5, TimeUnit.SECONDS)
+                .doOnComplete(this::goToServicePickerActivity)
+                .doOnError(Timber::e)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    private void makeCall() {
 
         Timber.d("make call");
 
@@ -94,39 +128,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        result -> Timber.d(result),
+                        result -> Timber.d("result : %s", result),
                         Timber::e
                 );
 
-    }
-
-    interface ApiService {
-        @GET("users/db")
-        Single<String> getDbConnection();
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().detachView();
-        context = null;
-    }
-
-    /////////////////////////////////
-    //
-    // PRESENTER
-    //
-    /////////////////////////////////
-    @Override
-    public void onPermissionsGranted() {
-
-        Completable
-                .complete()
-                .delay(3, TimeUnit.SECONDS)
-                .doOnComplete(this::goToServicePickerActivity)
-                .doOnError(Timber::e)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
     }
 
     @Override
