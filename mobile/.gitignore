@@ -15,6 +15,10 @@
 local.properties
 
 
+../backend/
+../frontend/
+
+
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
 
