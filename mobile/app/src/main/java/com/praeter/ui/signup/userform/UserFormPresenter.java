@@ -1,5 +1,6 @@
 package com.praeter.ui.signup.userform;
 
+import com.praeter.data.remote.dto.User;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BasePresenterImpl;
 
@@ -7,7 +8,6 @@ import javax.inject.Inject;
 
 public class UserFormPresenter extends BasePresenterImpl<UserFormView>
         implements UserFormContract.Presenter {
-
 
     @Inject
     UserFormActivity activity;
@@ -20,8 +20,9 @@ public class UserFormPresenter extends BasePresenterImpl<UserFormView>
     }
 
     @Override
-    public void goToPlanActivity() {
-        if (null != activity && null != navigator)
-            navigator.callPlanActivity();
+    public void goToPlanActivity(User user) {
+        if (null != activity && null != navigator) {
+            navigator.callPlanActivity(user);
+        }
     }
 }

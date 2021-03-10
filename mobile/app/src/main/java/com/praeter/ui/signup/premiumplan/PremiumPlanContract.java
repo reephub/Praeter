@@ -1,5 +1,6 @@
 package com.praeter.ui.signup.premiumplan;
 
+import com.praeter.data.remote.dto.User;
 import com.praeter.ui.base.BaseView;
 
 public class PremiumPlanContract {
@@ -26,6 +27,6 @@ public class PremiumPlanContract {
 
         void checkCardValidity();
 
-        void goToSuccessfulSignUpActivity();
+        void goToSuccessfulSignUpActivity(User user);
     }
 }

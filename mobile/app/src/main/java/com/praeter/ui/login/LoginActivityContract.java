@@ -1,5 +1,6 @@
 package com.praeter.ui.login;
 
+import com.praeter.data.remote.dto.User;
 import com.praeter.ui.base.BaseView;
 
 public interface LoginActivityContract {
@@ -26,7 +27,7 @@ public interface LoginActivityContract {
 
     interface Presenter {
 
-        void makeCallLogin();
+        void makeCallLogin(User user);
 
     }
 }

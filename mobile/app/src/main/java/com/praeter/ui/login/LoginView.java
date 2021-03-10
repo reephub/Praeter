@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.praeter.R;
+import com.praeter.data.remote.dto.User;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseViewImpl;
 
@@ -106,8 +107,8 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
 
 
     void preloadData() {
-        inputEmail.setText("test@test.fr");
-        inputPassword.setText("1234");
+        inputEmail.setText("jane.mills@test.fr");
+        inputPassword.setText("jm_test");
     }
 
     @Override
@@ -197,12 +198,12 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
 
         Timber.e("login()");
 
-        final String name = inputPassword.getText().toString();
         final String email = inputEmail.getText().toString();
+        final String password = inputPassword.getText().toString();
 
         Timber.d("make rest call login");
 
-        getPresenter().makeCallLogin();
+        getPresenter().makeCallLogin(new User(email, password));
     }
 
 

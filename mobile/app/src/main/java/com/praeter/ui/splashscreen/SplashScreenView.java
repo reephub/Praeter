@@ -3,8 +3,6 @@ package com.praeter.ui.splashscreen;
 import android.annotation.SuppressLint;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.praeter.R;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BaseViewImpl;
@@ -17,14 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 import timber.log.Timber;
 
 
@@ -64,11 +55,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().getAppVersion();
     }
 
-    interface ApiService {
-        @GET("users/db")
-        Single<String> getDbConnection();
-    }
-
     @Override
     public void onDestroy() {
         getPresenter().detachView();
@@ -84,54 +70,13 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     public void onPermissionsGranted() {
 
         Completable
-                .fromAction(() -> {
-                    makeCall();
-                })
+                .complete()
                 .delay(5, TimeUnit.SECONDS)
                 .doOnComplete(this::goToServicePickerActivity)
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
-    }
-
-    private void makeCall() {
-
-        Timber.d("make call");
-
-        Gson gson = new GsonBuilder()
-                .disableHtmlEscaping()
-                .setLenient()
-                .create();
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        logging.redactHeader("Authorization");
-        logging.redactHeader("Cookie");
-
-        OkHttpClient client =
-                new OkHttpClient.Builder()
-                        .addInterceptor(logging)
-                        .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.48:3000/")
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(client)
-                .build();
-
-        ApiService api = retrofit.create(ApiService.class);
-
-
-        api.getDbConnection()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        result -> Timber.d("result : %s", result),
-                        Timber::e
-                );
-
     }
 
     @Override
@@ -157,12 +102,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     // CLASS METHODS
     //
     /////////////////////////////////
-
     private void goToServicePickerActivity() {
         Timber.i("goToServicePickerActivity()");
         if (context != null && navigator != null) {
-            navigator.callServicePickerActivity();
-//            navigator.callSuccessfulSignUpActivity();
+            navigator.callServicePickerActivity();;
             context.finish();
         }
     }

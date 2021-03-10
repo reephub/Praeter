@@ -4,6 +4,10 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.praeter.data.remote.PraeterService;
+import com.praeter.data.remote.api.DbApiService;
+import com.praeter.data.remote.api.UserApiService;
+import com.praeter.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -92,7 +96,23 @@ public class DataModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @NotNull DbApiService provideDbApiService() {
+        return provideRetrofit(Constants.BASE_ENDPOINT_PRAETER_URL).create(DbApiService.class);
+    }
+    @Provides
+    @Singleton
+    @NotNull UserApiService provideUserApiService() {
+        return provideRetrofit(Constants.BASE_ENDPOINT_PRAETER_URL).create(UserApiService.class);
+    }
 
+
+    @Provides
+    @Singleton
+    PraeterService providesLabService() {
+        return new PraeterService(provideUserApiService(), provideDbApiService());
+    }
 
     enum TimeOut {
         TIME_OUT_READ(60),

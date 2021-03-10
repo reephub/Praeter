@@ -9,6 +9,7 @@ import com.praeter.ui.base.BaseActivity;
 
 public class PremiumPlanActivity extends BaseActivity<PremiumPlanView> {
 
+    public static final String EXTRA_USER = "EXTRA_USER";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
