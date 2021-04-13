@@ -21,12 +21,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /* @Post()
-  @Header('Content-Type', 'application/json')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  } */
-
   @Post()
   @Header('Content-Type', 'application/json')
   create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
