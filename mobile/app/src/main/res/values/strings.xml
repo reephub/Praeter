@@ -33,6 +33,7 @@
     <string name="err_msg_name">Enter your full name</string>
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
+    <string name="err_msg_wrong_email_or_password">Email or password is not correct. Please verified your credentials.</string>
 
     <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
 

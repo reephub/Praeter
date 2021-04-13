@@ -26,11 +26,11 @@ public interface ComponentInjector extends AndroidInjector<PraeterApplication> {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        Builder application(Application application);
+        ComponentInjector.Builder application(Application application);
 
-        Builder applicationModule(ApplicationModule applicationModule);
+        ComponentInjector.Builder applicationModule(ApplicationModule applicationModule);
 
-        Builder dataModule(DataModule dataModule);
+        ComponentInjector.Builder dataModule(DataModule dataModule);
 
         ComponentInjector build();
     }

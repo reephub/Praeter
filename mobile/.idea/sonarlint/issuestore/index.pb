@@ -138,3 +138,7 @@ b
 2app/src/main/java/com/praeter/utils/Constants.java,8\8\8831aa43083246057cffdc820068effa4221f420
 o
 ?app/src/main/java/com/praeter/data/remote/api/DbApiService.java,f\e\fedcb02898add2237606e77f62bf3b69054176c7
+g
+7app/src/main/java/com/praeter/ui/login/LoginModule.java,5\1\51bfd7f36d4b54f623913fa70939c5ecb2ba01aa
+[
++app/src/main/res/layout/nav_header_main.xml,c\2\c2e5d0b244b7ce4916b4bef4396275c61eb4e7e1

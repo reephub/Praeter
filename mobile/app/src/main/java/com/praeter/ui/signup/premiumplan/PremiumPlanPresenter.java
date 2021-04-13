@@ -74,7 +74,6 @@ public class PremiumPlanPresenter extends BasePresenterImpl<PremiumPlanView>
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
-
     }
 
     @Override

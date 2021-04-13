@@ -1,14 +1,15 @@
 package com.praeter.ui.signup.successfulsignup;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,44 +20,34 @@ import com.praeter.ui.base.BaseViewImpl;
 
 import org.parceler.Parcels;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class SuccessfulSignUpView extends BaseViewImpl<SuccessfulSignUpPresenter>
-        implements SuccessfulSignUpContract.View, Animation.AnimationListener {
+        implements SuccessfulSignUpContract.View {
 
     private SuccessfulSignUpActivity context;
 
     // views
     @BindView(R.id.tv_title_congratulations)
     TextView tvTitleCongratulations;
-
     @BindView(R.id.tv_congratulations_msg)
     TextView tvCongratulationsMsg;
-
     @BindView(R.id.iv_animated_check)
     ImageView ivCheck;
-
     @BindView(R.id.btn_continue)
     Button btnContinue;
 
-
     AnimatedVectorDrawable mAnimationDrawable;
-
-    Animation animFadeIn;
-    Animation animSlideUp;
-
-    boolean hasMsgAnimationStarted = false;
 
     @Inject
     SuccessfulSignUpView(SuccessfulSignUpActivity context) {
@@ -69,7 +60,7 @@ public class SuccessfulSignUpView extends BaseViewImpl<SuccessfulSignUpPresenter
 
         getPresenter().attachView(this);
 
-        ButterKnife.bind(context);
+        ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         context.getSupportActionBar().setTitle(R.string.title_activity_successful_sign_up);
 
@@ -93,14 +84,37 @@ public class SuccessfulSignUpView extends BaseViewImpl<SuccessfulSignUpPresenter
 
     @Override
     public void onUserSaveSuccessful() {
-        startAnimation(tvTitleCongratulations);
 
-        Completable
-                .complete()
-                .delay(500, TimeUnit.MILLISECONDS)
-                .doOnComplete(() -> startAnimation(tvCongratulationsMsg))
-                .doOnError(Timber::e)
-                .doAfterTerminate(() -> startAnimation(ivCheck))
+        Observable observable1 =
+                Observable
+                        .create(emitter -> startAnimation(tvTitleCongratulations, emitter))
+                        .doOnComplete(() -> Timber.d("observable 1 on complete"))
+                        .doOnError(Timber::e);
+
+        Observable observable2 =
+                Observable
+                        .create(emitter -> startAnimation(tvCongratulationsMsg, emitter))
+                        .doOnComplete(() -> Timber.d("observable 2 on complete"))
+                        .doOnError(Timber::e);
+
+        Observable observable3 =
+                Observable
+                        .create(emitter -> startAnimation(ivCheck, emitter))
+                        .doOnComplete(() -> Timber.d("observable 3 on complete"))
+                        .doOnError(Timber::e);
+
+        Observable observable4 =
+                Observable
+                        .create(this::animateButton)
+                        .doOnComplete(() -> Timber.d("observable 4 on complete"))
+                        .doOnError(Timber::e);
+
+        Observable.concat(
+                observable1,
+                observable2,
+                observable3,
+                observable4
+        )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
@@ -108,6 +122,7 @@ public class SuccessfulSignUpView extends BaseViewImpl<SuccessfulSignUpPresenter
 
     @Override
     public void onUserSaveError(Throwable throwable) {
+        Timber.e("onUserSaveError()");
         Timber.e(throwable);
     }
 
@@ -118,109 +133,87 @@ public class SuccessfulSignUpView extends BaseViewImpl<SuccessfulSignUpPresenter
     }
 
 
-    public void startAnimation(final View view) {
+    public void startAnimation(final View view, final ObservableEmitter<Object> emitter) {
         Timber.d("startAnimation()");
 
-        animFadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
-        animFadeIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                Timber.d("onAnimationStart()");
+        context.runOnUiThread(() -> {
 
-                view.setVisibility(View.VISIBLE);
+            ObjectAnimator animator;
+            PropertyValuesHolder pvhTranslate = PropertyValuesHolder.ofFloat("translationY", 50f, 0f);
+            PropertyValuesHolder pvhAlpha = PropertyValuesHolder.ofFloat("alpha", 0f, 1f);
 
-                if (view == ivCheck)
-                    hasMsgAnimationStarted = true;
+            animator = ObjectAnimator.ofPropertyValuesHolder(view, pvhTranslate, pvhAlpha);
 
-            }
+            animator.setDuration(1000);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                Timber.d("onAnimationEnd()");
+                    if (view == ivCheck) {
+                        Drawable d = ivCheck.getDrawable();
 
-                if (view == ivCheck) {
-                    Drawable d = ivCheck.getDrawable();
-
-                    if (d instanceof AnimatedVectorDrawable) {
-                        mAnimationDrawable = (AnimatedVectorDrawable) d;
-                        mAnimationDrawable.start();
+                        if (d instanceof AnimatedVectorDrawable) {
+                            mAnimationDrawable = (AnimatedVectorDrawable) d;
+                            mAnimationDrawable.start();
+                        }
                     }
+
                 }
 
+                @Override
+                public void onAnimationEnd(Animator animation) {
 
-                if (hasMsgAnimationStarted) {
-
-                    Completable
-                            .complete()
-                            .delay(500, TimeUnit.MILLISECONDS)
-                            .doOnComplete(() -> animateButton())
-                            .doOnError(Timber::e)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe();
+                    view.setVisibility(View.VISIBLE);
+                    emitter.onComplete();
                 }
-            }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                Timber.d("onAnimationRepeat()");
-            }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animator.start();
         });
-
-        animSlideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up);
-
-        final AnimationSet mAnimationSet = new AnimationSet(true);
-
-        mAnimationSet.setInterpolator(new AccelerateInterpolator());
-
-        mAnimationSet.addAnimation(animFadeIn);
-        mAnimationSet.addAnimation(animSlideUp);
-
-        view.startAnimation(mAnimationSet);
     }
 
-    private void animateButton() {
+    private void animateButton(final ObservableEmitter<Object> emitter) {
         Timber.d("animateButton()");
-        animFadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
-        animFadeIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                Timber.d("onAnimationStart()");
-                btnContinue.setVisibility(View.VISIBLE);
-            }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                Timber.d("onAnimationEnd()");
-            }
+        context.runOnUiThread(() -> {
+            btnContinue.animate()
+                    .setDuration(1000)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .alpha(1f)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            Timber.d("onAnimationStart()");
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                Timber.d("onAnimationRepeat()");
-            }
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            btnContinue.setVisibility(View.VISIBLE);
+                            emitter.onComplete();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    })
+                    .start();
         });
-
-        final AnimationSet mAnimationSet = new AnimationSet(true);
-
-        mAnimationSet.setInterpolator(new AccelerateInterpolator());
-
-        mAnimationSet.addAnimation(animFadeIn);
-        btnContinue.startAnimation(mAnimationSet);
-    }
-
-
-    @Override
-    public void onAnimationStart(Animation animation) {
-
-    }
-
-    @Override
-    public void onAnimationEnd(Animation animation) {
-
-    }
-
-    @Override
-    public void onAnimationRepeat(Animation animation) {
-
     }
 }

@@ -13,8 +13,8 @@ public class SuccessfulSignUpActivity extends BaseActivity<SuccessfulSignUpView>
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_successful_sign_up);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

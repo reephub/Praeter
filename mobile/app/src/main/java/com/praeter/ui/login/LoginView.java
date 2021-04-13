@@ -135,7 +135,8 @@ public class LoginView extends BaseViewImpl<LoginPresenter>
 
     @Override
     public void onLoginFailed() {
-
+        inputLayoutEmail.setError(context.getString(R.string.err_msg_wrong_email_or_password));
+        inputLayoutPassword.setError(context.getString(R.string.err_msg_wrong_email_or_password));
     }
 
     @Override

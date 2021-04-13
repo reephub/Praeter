@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import timber.log.Timber;
 
 public class SuccessfulSignUpPresenter extends BasePresenterImpl<SuccessfulSignUpView>
         implements SuccessfulSignUpContract.Presenter {
@@ -36,7 +37,11 @@ public class SuccessfulSignUpPresenter extends BasePresenterImpl<SuccessfulSignU
         Disposable disposable =
                 service.saveUser(user)
                         .subscribe(apiResponse -> {
-                            getView().onUserSaveSuccessful();
+                            if (0 == apiResponse.getCode())
+                                getView().onUserSaveSuccessful();
+
+                            else
+                                Timber.e("" + apiResponse.getCode());
                         }, throwable -> {
                             getView().onUserSaveError(throwable);
                         });

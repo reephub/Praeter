@@ -227,6 +227,11 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
      * Validating form
      */
     private void submitForm() {
+
+        if (!validateGender()) {
+            return;
+        }
+
         if (!validateLastName()) {
             return;
         }
@@ -266,6 +271,15 @@ public class UserFormView extends BaseViewImpl<UserFormPresenter>
         Toast.makeText(context, "Thank You!", Toast.LENGTH_SHORT).show();
 
         getPresenter().goToPlanActivity(user);
+    }
+
+    private boolean validateGender() {
+        if (null == szGender || szGender.isEmpty()) {
+            Toast.makeText(context, "Please select a gender", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private boolean validateLastName() {
