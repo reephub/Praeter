@@ -1,6 +1,5 @@
-import { HttpStatus, Injectable, Res } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Response } from 'express';
 import { Connection, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -43,29 +42,14 @@ export class UsersService {
     private connection: Connection,
   ) {}
 
-  canConnect(@Res() res: Response) {
-    if (!this.connection.connect) {
-      console.log('Connection to the database impossible');
-      
-      return res.status(HttpStatus.OK).json("databse connection failed");
-      //return new Response('{"message" : "databse connection failed"}');
-    } else {
-      console.log('Connection succesfully done');
-      return res.status(HttpStatus.OK).json("databse connection successful");
-      //return '{"message" : "database connection successful}"';
-    }
-  }
-
   create(createUserDto: CreateUserDto) {
     // this.users.push(createUserDto);
     console.log('This action adds a new user');
     return 'This action adds a new user';
   }
 
-  createRepository(createUserDto: CreateUserDto) {
-    console.log('createUserDto : ', createUserDto);
-    this.usersRepository.insert(createUserDto);
-    return 'This action adds a new user';
+  async createRepository(createUserDto: CreateUserDto): Promise<CreateUserDto> {
+    return await this.usersRepository.save(createUserDto)
   }
 
   findAll() {
@@ -86,12 +70,45 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
+  /**
+   * Returns the list of all users in database
+   */
   findAllRepository(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findOneRepositorye(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
+  async findOneRepositoryByID(id: number): Promise<User> {
+    try {
+      return await this.usersRepository.findOne(id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async findOneRepositoryByEmail(
+    email: string,
+    password: string,
+  ): Promise<User> {
+    console.log(`findOneRepositoryByEmail()`);
+
+    console.log(`paramter value :`);
+    console.log(email);
+    console.log(password);
+    // Store response in variable
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: email,
+        password: password,
+      },
+    });
+
+    console.log(`${user.email}`);
+
+    // Check variable's validity (undefined or not)
+    if (user.email !== email) {
+      throw Error();
+    }
+    return user;
   }
 
   async removeRepository(id: string): Promise<void> {
