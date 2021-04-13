@@ -49,7 +49,6 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
                             // do you work now
-//                            Toast.makeText(context, "All permissions are granted!", Toast.LENGTH_SHORT).show();
                             Timber.d("All permissions are granted!");
                             getView().onPermissionsGranted();
 

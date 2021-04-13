@@ -3,10 +3,7 @@ package com.praeter.ui.mainactivity;
 import android.annotation.SuppressLint;
 
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.praeter.R;

@@ -1,5 +1,6 @@
 package com.praeter.ui.signup.premiumplan;
 
+import com.praeter.data.remote.dto.User;
 import com.praeter.navigator.Navigator;
 import com.praeter.ui.base.BasePresenterImpl;
 
@@ -14,7 +15,6 @@ import timber.log.Timber;
 
 public class PremiumPlanPresenter extends BasePresenterImpl<PremiumPlanView>
         implements PremiumPlanContract.Presenter {
-
 
     @Inject
     PremiumPlanActivity activity;
@@ -61,8 +61,6 @@ public class PremiumPlanPresenter extends BasePresenterImpl<PremiumPlanView>
                     getView().hideLoading();
 
                     getView().onSuccessfulCreditCard();
-
-
                 })
                 .doOnError(throwable -> {
                     getView().hideLoading();
@@ -76,11 +74,10 @@ public class PremiumPlanPresenter extends BasePresenterImpl<PremiumPlanView>
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
-
     }
 
     @Override
-    public void goToSuccessfulSignUpActivity() {
-        navigator.callSuccessfulSignUpActivity();
+    public void goToSuccessfulSignUpActivity(User user) {
+        navigator.callSuccessfulSignUpActivity(user);
     }
 }

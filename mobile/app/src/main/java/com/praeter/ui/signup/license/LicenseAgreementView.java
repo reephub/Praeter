@@ -65,6 +65,7 @@ public class LicenseAgreementView extends BaseViewImpl<LicenseAgreementPresenter
 
     @Override
     public void onDestroy() {
+        getPresenter().detachView();
         context = null;
     }
 }

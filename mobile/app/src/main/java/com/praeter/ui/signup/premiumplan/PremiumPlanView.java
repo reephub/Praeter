@@ -2,17 +2,23 @@ package com.praeter.ui.signup.premiumplan;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.praeter.R;
+import com.praeter.data.remote.dto.User;
 import com.praeter.ui.base.BaseViewImpl;
+
+import org.parceler.Parcels;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +35,8 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
         implements PremiumPlanContract.View {
+
+    public static final String EXTRA_USER = "EXTRA_USER";
 
     // TAG & Context
     private PremiumPlanActivity context;
@@ -61,6 +69,8 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
     ProgressDialog dialog;
 
+    private User user;
+
 
     @Inject
     PremiumPlanView(PremiumPlanActivity context) {
@@ -75,6 +85,12 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
         context.getSupportActionBar().setTitle(context.getString(R.string.title_activity_premium_plan));
 
+        Bundle extras = context.getIntent().getExtras();
+
+        if (null == extras)
+            return;
+
+        user = Parcels.unwrap(extras.getParcelable(EXTRA_USER));
     }
 
 
@@ -92,13 +108,12 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
     @Override
     public void hideLoading() {
-        if (null!= dialog && dialog.isShowing())
+        if (null != dialog && dialog.isShowing())
             dialog.dismiss();
     }
 
     @Override
     public void disableUI() {
-
         inputLayoutCreditCardOwnerName.setEnabled(false);
         inputLayoutCreditCardNumber.setEnabled(false);
         inputLayoutCreditCardCCV.setEnabled(false);
@@ -110,14 +125,11 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
         // Avoid crash
         // Caused by: android.view.ViewRootImpl$CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views.
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                inputLayoutCreditCardOwnerName.setEnabled(true);
-                inputLayoutCreditCardNumber.setEnabled(true);
-                inputLayoutCreditCardCCV.setEnabled(true);
-                btnContinue.setEnabled(true);
-            }
+        context.runOnUiThread(() -> {
+            inputLayoutCreditCardOwnerName.setEnabled(true);
+            inputLayoutCreditCardNumber.setEnabled(true);
+            inputLayoutCreditCardCCV.setEnabled(true);
+            btnContinue.setEnabled(true);
         });
 
     }
@@ -129,12 +141,12 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
                         context.findViewById(android.R.id.content),
                         "onSuccessfulCreditCard()",
                         BaseTransientBottomBar.LENGTH_LONG)
-                .setBackgroundTint(context.getResources().getColor(android.R.color.holo_green_dark))
+                .setBackgroundTint(ContextCompat.getColor(context, android.R.color.holo_green_dark))
                 .show();
 
         Completable.complete()
                 .delay(2, TimeUnit.SECONDS)
-                .doOnComplete(() -> getPresenter().goToSuccessfulSignUpActivity())
+                .doOnComplete(() -> getPresenter().goToSuccessfulSignUpActivity(user))
                 .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -149,7 +161,7 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
                         context.findViewById(android.R.id.content),
                         "onFailedCreditCard()",
                         BaseTransientBottomBar.LENGTH_LONG)
-                .setBackgroundTint(context.getResources().getColor(android.R.color.holo_red_dark))
+                .setBackgroundTint(ContextCompat.getColor(context, android.R.color.holo_red_dark))
                 .show();
     }
 
@@ -203,7 +215,8 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
     // Validating number
     private boolean validateCardNumber() {
-        if (inputCreditCardNumber.getText().toString().trim().isEmpty() || inputCreditCardNumber.length() != 16) {
+        if (inputCreditCardNumber.getText().toString().trim().isEmpty()
+                || inputCreditCardNumber.length() != 16) {
             inputLayoutCreditCardNumber.setError(context.getString(R.string.err_msg_credit_card_number));
             requestFocus(inputCreditCardNumber);
             return false;
@@ -217,7 +230,8 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
     // Validating ccv
     private boolean validateCardCCV() {
-        if (inputCreditCardCCV.getText().toString().trim().isEmpty() || inputCreditCardCCV.length() != 3) {
+        if (inputCreditCardCCV.getText().toString().trim().isEmpty()
+                || inputCreditCardCCV.length() != 3) {
             inputLayoutCreditCardCCV.setError(context.getString(R.string.err_msg_credit_card_ccv));
             requestFocus(inputCreditCardCCV);
             return false;
@@ -244,6 +258,7 @@ public class PremiumPlanView extends BaseViewImpl<PremiumPlanPresenter>
 
     @Override
     public void onDestroy() {
+        getPresenter().detachView();
         context = null;
     }
 }

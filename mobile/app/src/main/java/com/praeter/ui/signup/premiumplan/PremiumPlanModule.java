@@ -2,7 +2,10 @@ package com.praeter.ui.signup.premiumplan;
 
 import com.praeter.di.scopes.ActivityScope;
 import com.praeter.navigator.Navigator;
+import com.praeter.ui.base.BasePresenter;
+import com.praeter.ui.signup.successfulsignup.SuccessfulSignUpPresenter;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,4 +24,7 @@ public abstract class PremiumPlanModule {
         return new Navigator(activity);
     }
 
+    @ActivityScope
+    @Binds
+    abstract BasePresenter providePresenter(PremiumPlanPresenter presenter);
 }

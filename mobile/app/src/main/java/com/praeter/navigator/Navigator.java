@@ -3,6 +3,7 @@ package com.praeter.navigator;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.praeter.data.remote.dto.User;
 import com.praeter.ui.login.LoginActivity;
 import com.praeter.ui.mainactivity.MainActivity;
 import com.praeter.ui.servicepicker.ServicePickerActivity;
@@ -12,6 +13,8 @@ import com.praeter.ui.signup.premiumplan.PremiumPlanActivity;
 import com.praeter.ui.signup.successfulsignup.SuccessfulSignUpActivity;
 import com.praeter.ui.signup.userform.UserFormActivity;
 import com.praeter.ui.splashscreen.SplashScreenActivity;
+
+import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
@@ -55,16 +58,22 @@ public class Navigator {
         context.startActivity(new Intent(context, UserFormActivity.class));
     }
 
-    public void callPlanActivity() {
-        context.startActivity(new Intent(context, PlanActivity.class));
+    public void callPlanActivity(User user) {
+        Intent intent = new Intent(context, PlanActivity.class);
+        intent.putExtra(PlanActivity.EXTRA_USER, Parcels.wrap(user));
+        context.startActivity(intent);
     }
 
-    public void callPremiumPlanActivity() {
-        context.startActivity(new Intent(context, PremiumPlanActivity.class));
+    public void callPremiumPlanActivity(User user) {
+        Intent intent = new Intent(context, PremiumPlanActivity.class);
+        intent.putExtra(PremiumPlanActivity.EXTRA_USER, Parcels.wrap(user));
+        context.startActivity(intent);
     }
 
-    public void callSuccessfulSignUpActivity() {
-        context.startActivity(new Intent(context, SuccessfulSignUpActivity.class));
+    public void callSuccessfulSignUpActivity(User user) {
+        Intent intent = new Intent(context, SuccessfulSignUpActivity.class);
+        intent.putExtra(SuccessfulSignUpActivity.EXTRA_USER, Parcels.wrap(user));
+        context.startActivity(intent);
     }
 
 
