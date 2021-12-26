@@ -1,8 +1,14 @@
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'dagger.hilt.android.plugin'
+//apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
 
@@ -46,6 +52,16 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
+    // Watch the memory
+    dexOptions {
+        javaMaxHeapSize = '4g'
+        preDexLibraries = false
+    }
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
@@ -54,9 +70,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
 }
 
 dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2-native-mt'
+    implementation 'org.jetbrains.kotlin:kotlin-parcelize-runtime:1.5.30'
+    kapt('org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.3.0')
+
+    implementation 'androidx.core:core-splashscreen:1.0.0-alpha01'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.activity:activity-ktx:1.3.1'
+    implementation 'androidx.fragment:fragment-ktx:1.3.6'
 
     // AndroidX
     implementation rootProject.ext.generalDependencies.multidex
@@ -70,12 +105,21 @@ dependencies {
 
     implementation rootProject.ext.generalDependencies.autoFill
 
+    // Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+
     // Google Play
     // Maps
     implementation rootProject.ext.generalDependencies.maps
     implementation rootProject.ext.generalDependencies.location
+    implementation 'com.google.maps.android:maps-ktx:3.1.0'
+    implementation 'com.google.maps.android:maps-utils-ktx:3.1.0'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
     implementation rootProject.ext.generalDependencies.googleClient
+    implementation 'com.android.volley:volley:1.2.1'
 
+    
     // Firebase
     // Import the Firebase BoM
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
@@ -91,45 +135,41 @@ dependencies {
     implementation rootProject.ext.generalDependencies.firebasePerf
     //implementation rootProject.ext.generalDependencies.firebaseAds
 
-    // RxJava / RxAndroid
-    implementation rootProject.ext.generalDependencies.rxjava
-    implementation rootProject.ext.generalDependencies.rxandroid
 
     /* Dagger2 - We are going to use dagger.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     implementation rootProject.ext.generalDependencies.dagger
-    annotationProcessor rootProject.ext.generalDependencies.daggerCompiler
-    implementation rootProject.ext.generalDependencies.daggerAndroid
-    implementation rootProject.ext.generalDependencies.daggerAndroidSupport
-    // if you use the support libraries
-    annotationProcessor rootProject.ext.generalDependencies.daggerAndroidProcessor
+    kapt rootProject.ext.generalDependencies.daggerCompiler
+    kapt rootProject.ext.generalDependencies.daggerAndroidSupport
 
+    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
+    implementation rootProject.ext.generalDependencies.retrofit
+    implementation rootProject.ext.generalDependencies.okhttp3Logging
 
-    // Butterknife : Views binding
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation rootProject.ext.generalDependencies.butterknife
-    annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
+    // OkHttp
+    // define a BOM and its version
+    implementation(platform('com.squareup.okhttp3:okhttp-bom:4.9.0'))
+    // define any required OkHttp artifacts without version
+    implementation('com.squareup.okhttp3:okhttp')
+    implementation('com.squareup.okhttp3:logging-interceptor')
+
+    // Moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.12.0'
+    kapt('com.squareup.moshi:moshi-kotlin-codegen:1.12.0')
 
     // Glide
     implementation rootProject.ext.generalDependencies.glide
-    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+    kapt rootProject.ext.generalDependencies.glideAnnotation
 
     // Blurry
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
 
-
-    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
-    implementation rootProject.ext.generalDependencies.retrofit
-    implementation rootProject.ext.generalDependencies.retrofitConverterGson
-    implementation rootProject.ext.generalDependencies.retrofitRxJava
-    implementation rootProject.ext.generalDependencies.okhttp3Logging
-
-    // Parceler
-    implementation rootProject.ext.generalDependencies.parceler
-    annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
-
+    // Lottie
+    implementation 'com.airbnb.android:lottie:4.1.0'
 
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
@@ -140,12 +180,8 @@ dependencies {
     // Timber : Logging library
     implementation rootProject.ext.generalDependencies.timber
 
-    // Lombok
-    compileOnly rootProject.ext.generalDependencies.lombok
-    annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
-
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }

@@ -74,6 +74,7 @@
 
                 <!-- Close Icon -->
                 <ImageButton
+                    android:onClick="close"
                     android:id="@+id/close_bottom_sheet_btn"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
@@ -134,6 +135,7 @@
 
             <Button
                 android:id="@+id/btn_book"
+                android:onClick="book"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

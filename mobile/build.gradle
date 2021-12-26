@@ -1,53 +1,44 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 30
-    compileSdkVersion = 30
-    buildToolsVersion = "30.0.2"
+    targetSdkVersion = 31
+    compileSdkVersion = 31
+    buildToolsVersion = "30.0.3"
 
     // App dependencies
     multidexVersion = "2.0.1"
-    appCompatVersion = '1.2.0'
-    materialVersion = '1.3.0'
-    constraintLayoutVersion = '2.0.4'
+    appCompatVersion = '1.3.1'
+    materialVersion = '1.4.0'
+    constraintLayoutVersion = '2.1.0'
     navigationFragmentVersion = '2.3.5'
     navigationUiVersion = '2.3.5'
-    recyclerViewVersion = '1.2.0'
+    recyclerViewVersion = '1.2.1'
     cardViewVersion = "1.0.0"
 
     autoFillVersion = '1.1.0'
-    googleClientVersion = '1.31.3'
+    googleClientVersion = '1.32.1'
     googleLocationVersion = '18.0.0'
-    mapsVersion = '17.0.0'
+    mapsVersion = '17.0.1'
 
     firebaseBomVersion = "26.0.0"
     adsVersion = "19.5.0"
 
     roomVersion = "2.2.5"
 
-    daggerVersion = '2.18'
-
-    parcelerVersion = '1.1.13'
-
-    rxjavaVersion = "3.0.0"
-    rxandroidVersion = "3.0.0"
-
-    butterknifeVersion = '10.2.3'
+    daggerVersion = '2.38.1'
 
     retrofit2Version = "2.9.0"
     okhttp3LoggingVersion = '5.0.0-alpha.2'
 
-    dexterVersion = '6.2.2'
+    dexterVersion = '6.2.3'
 
-    threetenVersion = '1.3.0'
+    threetenVersion = '1.3.1'
 
-    timberVersion = "4.7.1"
-
-    lombokVersion = '1.18.18'
+    timberVersion = '5.0.1'
 
     glideVersion = '4.12.0'
-    blurryVersion = "3.0.0"
-    glideTransformationVersion = "4.0.0"
+    blurryVersion = '4.0.0'
+    glideTransformationVersion = '4.3.0'
 
     //Tests
     junitVersion = "4.12"
@@ -89,29 +80,14 @@ ext {
             /* Dagger2 - We are going to use dagger.android which includes
              * support for Activity and fragment injection so we need to include
              * the following dependencies */
-            dagger                : "com.google.dagger:dagger:$daggerVersion",
-            daggerCompiler        : "com.google.dagger:dagger-compiler:$daggerVersion",
-            daggerAndroid         : "com.google.dagger:dagger-android:$daggerVersion",
-            daggerAndroidSupport  : "com.google.dagger:dagger-android-support:$daggerVersion",// if you use the support libraries
-            daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:$daggerVersion",
+            dagger                : "com.google.dagger:hilt-android:$daggerVersion",
+            daggerCompiler        : "com.google.dagger:hilt-compiler:$daggerVersion",
+            daggerAndroidSupport  : "com.google.dagger:hilt-android-compiler:$daggerVersion",// if you use the support libraries
 
-            // Parceler
-            parceler              : "org.parceler:parceler-api:$parcelerVersion",
-            parcelerAnnotation    : "org.parceler:parceler:$parcelerVersion",
 
-            // RxJava / RxAndroid
-            rxjava                : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
-            rxandroid             : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
-
-            // Butterknife : Views binding
-            //noinspection AnnotationProcessorOnCompilePath
-            butterknife           : "com.jakewharton:butterknife:$butterknifeVersion",
-            butterknifeAnnotation : "com.jakewharton:butterknife-compiler:$butterknifeVersion",
 
             /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
             retrofit              : "com.squareup.retrofit2:retrofit:$retrofit2Version",
-            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
-            retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
             okhttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingVersion",
 
             // Dexter
@@ -123,9 +99,6 @@ ext {
             // Timber : Logging library
             timber                : "com.jakewharton.timber:timber:$timberVersion",
 
-            // Lombok
-            lombok                : "org.projectlombok:lombok:$lombokVersion",
-            lombokAnnotation      : "org.projectlombok:lombok:$lombokVersion",
 
             // Glide
             glide                 : "com.github.bumptech.glide:glide:$glideVersion",
@@ -146,25 +119,30 @@ ext {
 }
 
 buildscript {
+    ext.kotlin_version = '1.5.30'
+    ext.hilt_version = '2.38.1'
+
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.1.3"
+        classpath 'com.android.tools.build:gradle:4.2.2'
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
-        // Butterknife
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
+        // Dagger
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
         // Google Services
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.gms:google-services:4.3.10'
 
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
 
     }
 }
@@ -172,7 +150,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

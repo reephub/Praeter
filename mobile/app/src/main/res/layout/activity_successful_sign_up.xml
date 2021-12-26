@@ -57,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/medium_margin"
         android:alpha="0"
+        android:onClick="continueClick"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"

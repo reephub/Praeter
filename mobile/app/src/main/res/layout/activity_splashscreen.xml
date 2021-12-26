@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/splashscreen_root"
     android:padding="@dimen/medium_margin"
     tools:background="@color/oil">
 
@@ -36,7 +37,7 @@
 
     <!-- ProgressBar -->
     <!-- https://stackoverflow.com/questions/31021823/lollipop-progress-bar-tinting -->
-    <ProgressBar
+    <!--<ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="@dimen/big_margin"
@@ -49,7 +50,7 @@
         android:indeterminateTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />-->
 
     <TextView
         android:id="@+id/tv_app_version"
